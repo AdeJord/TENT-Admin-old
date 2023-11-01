@@ -89,3 +89,15 @@ export const Button = styled.button`
         color: #051101;
     }
 `;
+
+export const Table = styled.table`
+  font-family: 'Roboto, Arial, Helvetica, sans-serif';
+  font-size: calc(4px + 1.5vmin);
+  border-collapse: collapse;
+
+  th, td {
+    border: 1px solid #051101;
+    padding: 8px;
+    text-align: center;
+  }
+`;
