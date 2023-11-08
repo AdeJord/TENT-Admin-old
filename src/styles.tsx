@@ -43,7 +43,7 @@ export const Header = styled.div`
   align-items: center;
   justify-content: center;
   background-color: #051101;
-  height: 10vh;
+  height: auto;
   width: 100vw;
   color: #eaf3e7;
   font-size: 1.5rem;
@@ -129,4 +129,16 @@ export const Table = styled.table`
     padding: 8px;
     text-align: center;
   }
+`;
+
+export const TableContainer = styled.div`
+  background-color: #eaf3e7;
+  height: 90vh;
+  width: 80vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: calc(10px + 2vmin);
+  color: #051101;
+  font-family: "Roboto, Arial, Helvetica, sans-serif";
 `;

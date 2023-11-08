@@ -5,6 +5,7 @@ import {
   CalendarContainer,
   Button,
   ButtonContainer,
+  TableContainer
 } from "../styles";
 import axios from "axios";
 
@@ -24,9 +25,10 @@ interface Booking {
 
 const AllBookings = () => {
   const [data, setData] = useState<Booking[]>([]); // Initialize data as an empty array
-  const [targetMonth, setTargetMonth] = useState<string>(
-    new Date().toLocaleString("en-UK", { month: "long" })
-  );
+  // const [targetMonth, setTargetMonth] = useState<string>(
+  //   new Date().toLocaleString("en-UK", { month: "long" })
+  // );
+  const targetMonth = 'November'
 
   // Function to filter bookings by month
   const getBookingsForMonth = (month: string) => {
@@ -55,14 +57,15 @@ const AllBookings = () => {
     // You may need to update the 'targetMonth' state and re-fetch data for the new month.
   };
 
+
   return (
     <Root>
-      <h1>{targetMonth} Bookings</h1>
+      <h1>{targetMonth} 2023 Bookings</h1>
       <CalendarContainer>
         <ButtonContainer>
           <Button onClick={handlePrevMonth}>Prev Month</Button>
         </ButtonContainer>
-
+<TableContainer>
         <Table>
           <thead style={{ background: "gray" }}>
             <tr>
@@ -91,7 +94,7 @@ const AllBookings = () => {
             ))}
           </tbody>
         </Table>
-
+        </TableContainer>
         <ButtonContainer>
           <Button onClick={handleNextMonth}>Next Month</Button>
         </ButtonContainer>
