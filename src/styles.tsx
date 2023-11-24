@@ -59,6 +59,25 @@ export const Container = styled.div`
   font-family: "Roboto, Arial, Helvetica, sans-serif";
 `;
 
+export const ContainerRow = styled.div`
+  height: 10vh;
+  width: 60vw;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  font-family: "Roboto, Arial, Helvetica, sans-serif";
+`;
+
+export const ColumnContainer = styled.div`
+  height: 100vh;
+  width: 60vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: "Roboto, Arial, Helvetica, sans-serif";
+`;
+
 export const ContainerPartition = styled.div`
   height: 30vh;
   width: 40vw;
@@ -102,6 +121,8 @@ export const Button = styled.button`
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: center;
+  text-align: center;
   background-color: gray;
   color: #051101;
   font-size: calc(10px + 1vmin);
