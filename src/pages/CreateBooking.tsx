@@ -6,7 +6,15 @@ import {
     VALIDATOR_MIN,
     VALIDATOR_MAX
 } from '../utils/validators'
-import { Root, ColumnContainer, ContainerRow, ButtonContainer, Button } from '../styles'
+import { 
+    Root, 
+    FormRoot,
+    ColumnContainer, 
+    ContainerRow, 
+    ButtonContainer, 
+    Button, 
+    FormContainer
+} from '../styles'
 
 const inputHandler = (id: string, value: string, isValid: boolean) => {
     console.log('inputHandler')
@@ -19,13 +27,13 @@ const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
 
 const CreateBooking = () => {
     return (
-        <Root>
+        <FormRoot>
             <h1>
-                Booking Form
+                Booking form
             </h1>
+            <FormContainer>
             <ColumnContainer>
-                <form>
-                    {/* <ContainerRow> */}
+                <form onSubmit={submitHandler}>
                     <Input
                         style={{
                             width: '25vw',
@@ -218,7 +226,8 @@ const CreateBooking = () => {
                 </form>
                 <Button type='submit'>SUBMIT</Button>
             </ColumnContainer>
-        </Root>
+            </FormContainer>
+        </FormRoot>
     )
 }
 
