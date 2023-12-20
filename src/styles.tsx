@@ -14,7 +14,7 @@ export const Root = styled.div`
 
 export const FormRoot = styled.div`
   background-color: #eaf3e7;
-  height: auto;
+  height: 185vh;
   width: 100vw;
   display: flex;
   flex-direction: column;
@@ -23,6 +23,23 @@ export const FormRoot = styled.div`
   color: #051101;
   font-family: "Roboto, Arial, Helvetica, sans-serif";
 `;
+
+export const FormContainer = styled.div`
+  background-color: #e2f0dd;
+  border: 1px solid #051101;
+  border-radius: 5px;
+  box-shadow: 0 0 20px 2px #2f2f2f;
+  height: 180vh;
+  width: 40vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: calc(10px + 2vmin);
+  color: #051101;
+  font-family: "Roboto, Arial, Helvetica, sans-serif";
+`;
+
+
 
 export const FormSection = styled.div`
   background-color: #eaf3e7;
@@ -36,21 +53,6 @@ export const FormSection = styled.div`
   font-family: "Roboto, Arial, Helvetica, sans-serif";
 `;
 
-export const FormContainer = styled.div`
-  background-color: #eaf3e7;
-  border: 1px solid #051101;
-  border-radius: 5px;
-  box-shadow: 0 0 20px 2px #2f2f2f;
-  height: auto;
-  width: 40vw;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-size: calc(5px + 2vmin);
-  color: #051101;
-  font-family: "Roboto, Arial, Helvetica, sans-serif";
-  padding: 1rem;
-`;
 
 
 export const CalendarContainer = styled.div`
