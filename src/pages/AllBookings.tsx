@@ -11,16 +11,28 @@ import axios from "axios";
 
 // Define an interface for the booking object
 interface Booking {
-  id: string;
-  bookingDate: string;
-  bookingMonth: string;
-  bookedBy: string;
-  contactNumber: string;
-  contactEmail: string;
-  destination: string;
-  lunchArrangements: string;
-  wheelchairUsers: number;
+  booking_date: string;
+  first_name: string;
+  surname: string;
+  contact_number: string;
+  email_address: string;
+  house_number: string;
+  street_name: string;
+  city: string;
+  postcode: string;
+  wheelchair_users: number;
   smoking: string;
+  destination: string;
+  lunch_arrangements: string;
+  notes: string;
+  terms_and_conditions: string;
+  group_leader_policy: string;
+  // paid_status: string;
+  // skipper: string;
+  // crew1: string;
+  // crew2: string;
+  // complete: string;
+  bookingmonth: string;
 }
 
 const AllBookings = () => {
@@ -29,7 +41,7 @@ const AllBookings = () => {
   //initialise the year as current year
   const [year, setYear] = useState<number>(new Date().getFullYear());
 
-  //set the current month
+  //set the current month for initial render
   const [currentMonth, setCurrentMonth] = useState<string>(
     new Date().toLocaleString("en-UK", { month: "long" })
   );
@@ -38,26 +50,33 @@ const AllBookings = () => {
 
   // Function to filter bookings by month
   const getBookingsForMonth = (month: string) => {
-    return data.filter((booking) => booking.bookingMonth === month);
+    // console.log('month:', month);
+    // console.log('data:', data);
+    data.forEach(booking => console.log('booking:', booking));
+    return data.filter((booking) => booking.bookingmonth === month);
   };
 
 
+
   useEffect(() => {
-    // Fetch all bookings from the API
     axios
       .get("http://192.168.0.139:8000/bookings")
       .then((response) => {
+        // console.log("API Response:", response.data); // Log the response
         setData(response.data);
+        // console.log("Data:", response.data);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
+    { console.log(getBookingsForMonth(targetMonth)) }
   }, [targetMonth]);
+
 
   const handlePrevMonth = () => {
     let newTargetMonth;
     let newYear = year;
-  
+
     // Implement logic to switch to the previous month and update the year if needed
     switch (targetMonth) {
       case "January":
@@ -100,17 +119,17 @@ const AllBookings = () => {
       default:
         newTargetMonth = "Invalid Date";
     }
-  
+
     // Update the state with the new month and year
     setTargetMonth(newTargetMonth);
     setYear(newYear);
   };
-    
+
 
   const handleNextMonth = () => {
     let newTargetMonth;
     let newYear = year;
-  
+
     // Implement logic to switch to the next month and update the year if needed
     switch (targetMonth) {
       case "January":
@@ -153,54 +172,108 @@ const AllBookings = () => {
       default:
         newTargetMonth = "Invalid Date";
     }
-  
+
     // Update the state with the new month and year
     setTargetMonth(newTargetMonth);
     setYear(newYear);
   };
-  
-  
+
+
 
   return (
     <Root>
-      <h1>{targetMonth} {year} Bookings</h1>
-      <CalendarContainer>
+      <div style={{
+        display: "flex",
+        flexDirection: "row",
+        width: "100vw",
+      }}>
         <ButtonContainer>
           <Button onClick={handlePrevMonth}>Prev Month</Button>
         </ButtonContainer>
+        <div style={{
+          display: "flex",
+          flexDirection: "row",
+          width: "100vw",
+        }}>
+          <h1>{targetMonth} {year}</h1>
+        </div>
+
+        <ButtonContainer>
+          <Button onClick={handleNextMonth}>Next Month</Button>
+        </ButtonContainer>
+      </div>
+      <CalendarContainer>
+
         <TableContainer>
           <Table>
             <thead style={{ background: "gray" }}>
               <tr>
                 <th>Booking Date</th>
-                <th>Booked By</th>
+                <th>First Name</th>
+                <th>Surname</th>
                 <th>Contact Number</th>
                 <th>Contact Email</th>
-                <th>Destination</th>
-                <th>Lunch Arrangements</th>
+                <th>House Number</th>
+                <th>Street</th>
+                <th>City</th>
+                <th>Postcode</th>
                 <th>Wheelchair Users</th>
                 <th>Smoking</th>
+                <th>Destination</th>
+                <th>Lunch Arrangements</th>
+                <th>Notes</th>
+                <th>Terms and Conditions</th>
+                <th>Group Leader Policy</th>
+                <th>LINK TO EDIT!</th>
+                {/* <th>Paid Status</th>
+                <th>Skipper</th>
+                <th>Crew 1</th>
+                <th>Crew 2</th>
+                <th>Complete</th> */}
               </tr>
             </thead>
             <tbody>
               {getBookingsForMonth(targetMonth).map((item, index) => (
                 <tr key={index}>
-                  <td>{item.bookingDate}</td>
-                  <td>{item.bookedBy}</td>
-                  <td>{item.contactNumber}</td>
-                  <td>{item.contactEmail}</td>
+                  <td>{new Date(item.booking_date).toLocaleDateString('en-GB')}</td>
+                  <td>{item.first_name}</td>
+                  <td>{item.surname}</td>
+                  <td>{item.contact_number}</td>
+                  <td>{item.email_address}</td>
+                  <td>{item.house_number}</td>
+                  <td>{item.street_name}</td>
+                  <td>{item.city}</td>
+                  <td>{item.postcode}</td>
+                  <td>{item.wheelchair_users}</td>
+                  <td>{item.smoking ? 'Yes' : 'No'}</td>
                   <td>{item.destination}</td>
-                  <td>{item.lunchArrangements}</td>
-                  <td>{item.wheelchairUsers}</td>
-                  <td>{item.smoking}</td>
+                  <td>{item.lunch_arrangements}</td>
+                  <td>{item.notes}</td>
+                  <td>{item.terms_and_conditions ? 'Agreed' : 'NOT Agreed'}</td>
+                  <td>{item.group_leader_policy ? 'Agreed' : 'NOT Agreed'}</td>
+                  {/* <td>{item.paid_status}</td>
+                  <td>{item.skipper}</td>
+                  <td>{item.crew1}</td>
+                  <td>{item.crew2}</td>
+                  <td>{item.complete}</td> */}
+                  <td
+                    style={{
+                      color: "blue",
+                      textDecoration: "underline",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => { alert(`Booking for ${new Date(item.booking_date).toLocaleDateString('en-GB')} to be edited`) }}
+                  >
+                    EDIT
+                  </td>
+
                 </tr>
               ))}
             </tbody>
+
           </Table>
         </TableContainer>
-        <ButtonContainer>
-          <Button onClick={handleNextMonth}>Next Month</Button>
-        </ButtonContainer>
+
       </CalendarContainer>
     </Root>
   );

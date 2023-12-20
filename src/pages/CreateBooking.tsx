@@ -1,225 +1,256 @@
-import React, { ReactNode } from 'react'
-import Input from '../components/Input'
-import {
-    VALIDATOR_REQUIRE,
-    VALIDATOR_EMAIL,
-    VALIDATOR_MIN,
-    VALIDATOR_MAX
-} from '../utils/validators'
-import { Root, ColumnContainer, ContainerRow, ButtonContainer, Button } from '../styles'
+import React from "react";
+import { Root, FormRoot, FormContainer } from "../styles";
+import { format } from 'date-fns';
+import axios from "axios";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
-const inputHandler = (id: string, value: string, isValid: boolean) => {
-    console.log('inputHandler')
+//ADD POTSAL ADDRESS TO FORM
+
+interface FormData {
+  first_name: string;
+  surname: string;
+  contact_number: string;
+  email_address: string;
+  house_number: string;
+  street_name: string;
+  city: string;
+  postcode: string;
+  booking_date: string;
+  wheelchair_users: number;
+  smoking: boolean;
+  destination: string;
+  lunch_arrangements: string;
+  notes: string;
+  terms_and_conditions: boolean;
+  group_leader_policy: boolean;
+  // bookingMonth: string;
 }
 
-const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    console.log('submitHandler')
-}
 
-const CreateBooking = () => {
-    return (
-        <Root>
-            <h1>
-                Booking Form
-            </h1>
-            <ColumnContainer>
-                <form>
-                    {/* <ContainerRow> */}
-                    <Input
-                        style={{
-                            width: '25vw',
-                            height: '1.5vh',
-                        }}
-                        id='firstName'
-                        element='input'
-                        type='text'
-                        label="First Name"
-                        validators={[VALIDATOR_REQUIRE()]}
-                        errorText="Please enter your first name"
-                        onInput={inputHandler}
-                        placeholder='Your first name'
-                    />
-                    <Input
-                        style={{
-                            width: '25vw',
-                            height: '1.5vh',
-                        }}
-                        id='surname'
-                        element='input'
-                        type='text'
-                        label="Surname"
-                        validators={[VALIDATOR_REQUIRE(),]}
-                        errorText="Please enter your surname"
-                        onInput={inputHandler}
-                        placeholder='Your surname'
-                    />
-                    {/* </ContainerRow>
-                    <ContainerRow> */}
-                    <Input
-                        style={{
-                            width: '25vw',
-                            height: '1.5vh',
-                        }}
-                        id='contactNumber'
-                        element='input'
-                        type='text'
-                        label="Contact Number"
-                        validators={[VALIDATOR_REQUIRE()]}
-                        errorText="Please enter your contact number"
-                        onInput={inputHandler}
-                        placeholder='Your contact number'
-                    />
-                    <Input
-                        style={{
-                            width: '25vw',
-                            height: '1.5vh',
-                        }}
-                        id='emailAddress'
-                        element='input'
-                        type='email'
-                        label="Email Address"
-                        validators={[VALIDATOR_REQUIRE(), VALIDATOR_EMAIL()]}
-                        errorText="Please enter a valid email address"
-                        onInput={inputHandler}
-                        placeholder='Your email address'
-                    />
-                    {/* </ContainerRow>
-                    <ContainerRow> */}
-                    <Input
-                        style={{
-                            width: '20vw',
-                            height: '1.5vh',
-                        }}
-                        id='bookingDate'
-                        element='input'
-                        type='date'
-                        label="Booking Date"
-                        validators={[VALIDATOR_REQUIRE()]}
-                        errorText="Please enter the date you would like to book for"
-                        onInput={inputHandler}
-                    />
-                    <Input
-                        style={{
-                            width: '15vw',
-                            height: '1.5vh',
-                        }}
-                        id='wheelchairUsers'
-                        element='input'
-                        type='number'
-                        //NEED MAX MIN
-                        // min="0"
-                        // max="2"
-                        label="How many wheelchair users?"
-                        validators={[
-                            VALIDATOR_REQUIRE(),
-                            VALIDATOR_MIN(0),
-                            VALIDATOR_MAX(2)
-                        ]}
-                        errorText="Please enter number of wheelchair users. Min 0 - Max 2"
-                        onInput={inputHandler}
-                        placeholder='Wheelchairs?'
-                    />
-                    <Input
-                        style={{
-                            width: '18vw',
-                            height: '1.5vh',
-                        }}
-                        id='smoking'
-                        element='input'
-                        type='text'
-                        label="Smoking?"
-                        validators={[VALIDATOR_REQUIRE()]}
-                        errorText="Please enter whether smoking will be allowed on the trip"
-                        onInput={inputHandler}
-                        placeholder='Smoking / No Smoking'
-                    />
-                    {/* </ContainerRow> */}
-                    {/* <ContainerRow> */}
-                    <Input
-                        style={{
-                            width: '20vw',
-                            height: '1.5vh',
-                        }}
-                        id='destination'
-                        element='input'
-                        type='text'
-                        label="Destination"
-                        validators={[VALIDATOR_REQUIRE()]}
-                        errorText="Please enter where you would like to go (Coven or Autherley)"
-                        onInput={inputHandler}
-                        placeholder='Coven or Autherley'
-                    />
-                    <Input
-                        style={{
-                            width: '20vw',
-                            height: '1.5vh',
-                        }}
-                        id='lunchArrangements'
-                        element='input'
-                        type='text'
-                        label="Lunch Arrangements"
-                        validators={[VALIDATOR_REQUIRE()]}
-                        errorText="Please enter your lunch arrangements"
-                        onInput={inputHandler}
-                        placeholder='What about lunch?'
-                    />
+const schema = yup.object().shape({
+  first_name: yup.string().required(),
+  surname: yup.string().required(),
+  contact_number: yup.string().required(),
+  email_address: yup.string().required(),
+  house_number: yup.string().required(),
+  street_name: yup.string().required(),
+  city: yup.string().required(),
+  postcode: yup.string().required(),
+  booking_date: yup.string().required(),
+  wheelchair_users: yup
+    .number()
+    .required()
+    .oneOf([0, 1, 2], "Maximum of 2 wheelchair users per booking"),
+  smoking: yup.boolean().required("Please select Yes or No for smoking"),
+  destination: yup.string().required("Please select a destination"),
+  lunch_arrangements: yup.string().required("Please select a lunch option"),
+  notes: yup.string().required(),
+  terms_and_conditions: yup.boolean().required('Please accept the terms and conditions'),
+  group_leader_policy: yup.boolean().required('Please accept the group leader policy'),
+  // bookingMonth: yup.string().required(),
+  // paid_status: yup.string().required(),
+  // skipper: yup.string().required(),
+  // crew1: yup.string().required(),
+  // crew2: yup.string().required(),
+  // complete: yup.string().required(),
 
-                    {/* </ContainerRow>
-                    <ContainerRow */}
-                    {/* style={{
-                            display: 'flex',
-                            alignContent: 'center',
-                            paddingTop: '3rem',
-                        }}> */}
-                    <Input
-                        style={{
-                            width: '25vw',
-                            height: '15vh',
-                            resize: 'none',
-                        }}
-                        id='otherRequirements'
-                        element='textarea'
-                        type='text'
-                        label="Any other requirements or notes"
-                        onInput={inputHandler}
-                        placeholder='Is there anything else you would like us to know about?'
-                    />
-                    {/* </ContainerRow> */}
+});
 
-                    <Input
-                        style={{
-                            width: 'auto',
-                            height: 'auto',
-                            resize: 'none',
-                        }}
-                        type='checkbox'
-                        id='termsAndConditions'
-                        element='input'
-                        label="I have read and agree to the terms and conditions"
-                        validators={[VALIDATOR_REQUIRE()]}
-                        errorText="Please agree to the terms and conditions"
-                        onInput={inputHandler}
-                    ></Input>
-                    <Input
-                        style={{
-                            width: 'auto',
-                            height: 'auto',
-                            resize: 'none',
-                        }}
-                        type='checkbox'
-                        id='groupLeaderResponsibilities'
-                        element='input'
-                        label="I have read and agree to the group leader responsibilities"
-                        validators={[VALIDATOR_REQUIRE()]}
-                        errorText="Please agree to the group leader responsibilities"
-                        onInput={inputHandler}
-                    ></Input>
-                </form>
-                <Button type='submit'>SUBMIT</Button>
-            </ColumnContainer>
-        </Root>
-    )
-}
 
-export default CreateBooking
+const CreateBooking: React.FC = () => {
+
+  // Function to send data to the createBooking endpoint
+  const submitBooking: SubmitHandler<FormData> = async (data) => {
+    // Format the date to 'DD-MM-YYYY'
+    // const formattedDate = format(new Date(data.booking_date), 'dd-MM-yyyy');
+    // data.booking_date = formattedDate;
+
+    try {
+      const response = await axios.post("http://192.168.0.139:8000/createBooking", data);
+
+      console.log("Booking created successfully:", response.data);
+      // You can perform additional actions after a successful booking creation here
+    } catch (error) {
+      console.error("Error creating booking:", error);
+      // Handle error scenarios here
+    }
+  };
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: yupResolver(schema), // yup, joi and even your own.
+    defaultValues: { wheelchair_users: 0 }, // Set default value for wheelchairUsers
+  });
+
+
+  return (
+    <FormRoot>
+      <h1>Booking Form</h1>
+      <FormContainer>
+        <form
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            height: "auto",
+            width: "30vw",
+          }}
+          onSubmit={handleSubmit((data: FormData) => { 
+            submitBooking(data); 
+            // console.log(data); 
+          })}
+        >
+          <label>First Name</label>
+          <input 
+          style={{ width: "20vw" }} 
+          {...register("first_name")} 
+          autoComplete="given-name" />
+
+          <label>Surname</label>
+          <input 
+          style={{ width: "20vw" }} 
+          {...register("surname")} 
+          autoComplete="family-name" />
+
+          <label>Contact Number</label>
+          <input 
+          style={{ width: "20vw" }} 
+          type="string" {...register("contact_number")} 
+          autoComplete="tel" />
+
+          <label>Email</label>
+          <input 
+          style={{ width: "20vw" }} 
+          type="string" {...register("email_address")} 
+          autoComplete="email" />
+
+          <label>House Number</label>
+          <input
+            style={{ width: "20vw" }}
+            type="string" {...register("house_number")} 
+            autoComplete="address-line1" />
+
+          <label>Steet Name</label>
+          <input
+            style={{ width: "20vw" }}
+            type="string" {...register("street_name")} 
+            autoComplete="address-line2" />
+
+          <label>City</label>
+          <input
+            style={{ width: "20vw" }}
+            type="string" {...register("city")} 
+            autoComplete="address-level2" />
+
+          <label>Postcode</label>
+          <input
+            style={{ width: "10vw" }}
+            type="string" {...register("postcode")} 
+            autoComplete="postal-code" />
+          <br />
+          <label>Booking Date</label>
+          <input
+            style={{ width: "10vw" }}
+            type="date" {...register("booking_date")} />
+          <br />
+          <label>Wheelchair Users</label>
+          <input
+            style={{
+              width: "5vw",
+            }} type="number" min={0} max={2} {...register("wheelchair_users")} />
+          {errors.wheelchair_users && (
+            <p style={{ color: "red" }}>{errors.wheelchair_users.message}</p>
+          )}
+          <br />
+          <div>
+            <label>Smoking</label>
+            {/* NEED TO CHANGE THIS TO A STRING FOR YES AND NO HERE AND IN BACKEND? (EASIER THAN USING BOOLEAN) */}
+            <label>
+              <input type="radio"
+                value="true" 
+                {...register("smoking")} />
+              Yes
+            </label>
+            <label>
+              <input type="radio" 
+              value="false" 
+              {...register("smoking")} />
+              No
+            </label>
+          </div>
+          <br />
+          <div>
+            <label>Destination</label>
+            <br />
+            <label>
+              <input
+                type="radio"
+                value="Autherley"
+                {...register("destination")}
+              />
+              Autherley (£130)
+            </label>
+            <br />
+            <label>
+              <input type="radio" value="Coven" {...register("destination")} />
+              Coven( £100)
+            </label>
+          </div>
+          <br />
+          <label>Lunch Arrangements</label>
+          <label>
+            <input
+              type="radio"
+              value="Packed Lunch"
+              {...register("lunch_arrangements")}
+            />
+            Packed Lunch
+          </label>
+          <label>
+            <input
+              type="radio"
+              value="Fish and Chips"
+              {...register("lunch_arrangements")} />
+            Fish & Chips
+          </label>
+          <label>
+            <input
+              type="radio"
+              value="Pub Meal"
+              {...register("lunch_arrangements")} />
+            Pub Meal
+          </label>
+          <br />
+          <label>Other Requirements</label>
+          <input
+            style={{ height: "7vh" }}
+            type="string" {...register("notes")} />
+          <br />
+          <label>
+            I have read and agree to the terms and conditions
+          </label>
+          <input
+            type="checkbox"
+            {...register("terms_and_conditions")}
+          />
+          <label>
+            I have read and agree to the group leader policy
+          </label>
+          <input
+            type="checkbox"
+            {...register("group_leader_policy")}
+          />
+
+          <input type="submit" />
+        </form>
+      </FormContainer>
+    </FormRoot>
+  );
+};
+
+export default CreateBooking;

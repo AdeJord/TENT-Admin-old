@@ -1,4 +1,4 @@
-import { Header } from './styles';
+import { Root, Header } from './styles';
 import AllBookings from './pages/AllBookings';
 import AllVolunteers from './pages/AllVolunteers';
 import Calendar from './pages/Calendar';
@@ -10,6 +10,7 @@ import { BrowserRouter, Route, Link, Navigate, Outlet, Routes } from 'react-rout
 function App() {
   return (
     <BrowserRouter>
+    <Root>
         <Header>
           <Link style={{ 
             textDecoration: 'none', 
@@ -27,7 +28,7 @@ function App() {
           <Route path='/createbooking' element={<CreateBooking />} />
           <Route path='/editvolunteers' element={<EditVolunteers />} />
         </Routes>
-
+        </Root>
     </BrowserRouter>
   );
 }

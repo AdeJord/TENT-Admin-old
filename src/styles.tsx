@@ -12,6 +12,47 @@ export const Root = styled.div`
   font-family: "Roboto, Arial, Helvetica, sans-serif";
 `;
 
+export const FormRoot = styled.div`
+  background-color: #eaf3e7;
+  height: auto;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: calc(10px + 2vmin);
+  color: #051101;
+  font-family: "Roboto, Arial, Helvetica, sans-serif";
+`;
+
+export const FormSection = styled.div`
+  background-color: #eaf3e7;
+  height: 185vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: calc(10px + 2vmin);
+  color: #051101;
+  font-family: "Roboto, Arial, Helvetica, sans-serif";
+`;
+
+export const FormContainer = styled.div`
+  background-color: #eaf3e7;
+  border: 1px solid #051101;
+  border-radius: 5px;
+  box-shadow: 0 0 20px 2px #2f2f2f;
+  height: auto;
+  width: 40vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: calc(5px + 2vmin);
+  color: #051101;
+  font-family: "Roboto, Arial, Helvetica, sans-serif";
+  padding: 1rem;
+`;
+
+
 export const CalendarContainer = styled.div`
   background-color: #eaf3e7;
   height: 90vh;
@@ -32,7 +73,6 @@ export const ButtonContainer = styled.div`
   padding: 0.5rem;
   flex-direction: column;
   align-items: center;
-  font-size: calc(10px + 2vmin);
   color: #051101;
   font-family: "Roboto, Arial, Helvetica, sans-serif";
 `;
@@ -43,10 +83,10 @@ export const Header = styled.div`
   align-items: center;
   justify-content: center;
   background-color: #051101;
-  height: auto;
+  height: 10vh;
   width: 100vw;
   color: #eaf3e7;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   font-family: "Roboto, Arial, Helvetica, sans-serif";
 `;
 
@@ -125,7 +165,7 @@ export const Button = styled.button`
   text-align: center;
   background-color: gray;
   color: #051101;
-  font-size: calc(10px + 1vmin);
+  font-size: 12px;
   font-family: "Roboto, Arial, Helvetica, sans-serif";
   border: 1px solid #051101;
   border-radius: 5px;
@@ -141,7 +181,7 @@ export const Button = styled.button`
 
 export const Table = styled.table`
   font-family: "Roboto, Arial, Helvetica, sans-serif";
-  font-size: calc(4px + 1.5vmin);
+  font-size: calc(2px + 1vmin);
   border-collapse: collapse;
 
   th,
