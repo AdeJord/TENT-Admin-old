@@ -8,7 +8,7 @@ function Home() {
         <Root>
             <Container>
                 <ContainerPartition>
-                    <Link style={{ textDecoration: 'none' }} to="./AllBookings">View All Bookings</Link>
+                    <Link style={{ textDecoration: 'none' }} to="./AllBookings">View/Edit Bookings</Link>
                 </ContainerPartition>
                 <ContainerPartition>
                     <Link style={{ textDecoration: 'none' }} to="./AllVolunteers">View All Volunteers</Link>

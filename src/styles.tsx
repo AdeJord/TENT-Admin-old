@@ -29,12 +29,12 @@ export const FormContainer = styled.div`
   border: 1px solid #051101;
   border-radius: 5px;
   box-shadow: 0 0 20px 2px #2f2f2f;
-  height: 180vh;
+  height: auto;
   width: 40vw;
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: calc(10px + 2vmin);
+  font-size: calc(10px + 1vmin);
   color: #051101;
   font-family: "Roboto, Arial, Helvetica, sans-serif";
 `;

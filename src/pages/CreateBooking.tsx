@@ -2,7 +2,7 @@ import React from "react";
 import { Root, FormRoot, FormContainer } from "../styles";
 import { format } from 'date-fns';
 import axios from "axios";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, Resolver } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
@@ -22,23 +22,69 @@ interface FormData {
   smoking: boolean;
   destination: string;
   lunch_arrangements: string;
-  notes: string;
+  notes?: string | undefined;
   terms_and_conditions: boolean;
   group_leader_policy: boolean;
   // bookingMonth: string;
 }
 
 
+const isBookingDateAvailable = async (date: string) => {
+  try {
+    // Check if the date is in the future
+    const currentDate = new Date();
+    const selectedDate = new Date(date);
+
+    if (selectedDate <= currentDate) {
+      return false; // Date is not in the future
+    }
+
+    // Check if there are existing bookings on the given date
+    const response = await axios.get(`http://192.168.0.139:8000/bookings?date=${date}`);
+    const existingBookings = response.data; // Adjust this based on your API response structure
+
+    return existingBookings.length === 0; // Date is available if there are no existing bookings
+  } catch (error) {
+    console.error('Error checking booking availability:', error);
+    return false; // Assume date is not available in case of an error
+  }
+};
+
+
 const schema = yup.object().shape({
-  first_name: yup.string().required(),
-  surname: yup.string().required(),
-  contact_number: yup.string().required(),
-  email_address: yup.string().required(),
-  house_number: yup.string().required(),
-  street_name: yup.string().required(),
-  city: yup.string().required(),
-  postcode: yup.string().required(),
-  booking_date: yup.string().required(),
+  first_name: yup.string().required('You must enter a first name'),
+  surname: yup.string().required('You must enter a surname'),
+  contact_number: yup.string().required('You must enter a contact number'),
+  email_address: yup.string().required('You must enter an email address'),
+  house_number: yup.string().required('You must enter a house number'),
+  street_name: yup.string().required('You must enter a street name'),
+  city: yup.string().required('You must enter a city'),
+  postcode: yup.string().required('You must enter a postcode'),
+  booking_date: yup
+    .string()
+    .required('You must select a date')
+    .test({
+      name: 'is-future-date',
+      message: 'We can travel the canals but, unfortunately, not through time. Please select a date that is in the future!',
+      test: function (value) {
+        const currentDate = new Date();
+        const selectedDate = new Date(value);
+
+        return selectedDate > currentDate;
+      },
+    })
+    .test({
+      name: 'is-booking-date-available',
+      message: 'There is already a booking on this date',
+      test: async function (value) {
+        // Only perform the validation if the date is in the future
+        if (value) {
+          return await isBookingDateAvailable(value);
+        }
+
+        return false; // Skip validation if date is not provided
+      },
+    }),
   wheelchair_users: yup
     .number()
     .required()
@@ -46,27 +92,24 @@ const schema = yup.object().shape({
   smoking: yup.boolean().required("Please select Yes or No for smoking"),
   destination: yup.string().required("Please select a destination"),
   lunch_arrangements: yup.string().required("Please select a lunch option"),
-  notes: yup.string().required(),
+  notes: yup.string().notRequired(),
   terms_and_conditions: yup.boolean().required('Please accept the terms and conditions'),
   group_leader_policy: yup.boolean().required('Please accept the group leader policy'),
-  // bookingMonth: yup.string().required(),
-  // paid_status: yup.string().required(),
-  // skipper: yup.string().required(),
-  // crew1: yup.string().required(),
-  // crew2: yup.string().required(),
-  // complete: yup.string().required(),
-
 });
+
+type MyResolverType = Resolver<FormData, typeof yupResolver>;
+
+
+//TODO 
+//NEED TO CHECK DATE IS AVAILABLE AND IN THE FUTURE.DONE
+//ALSO NEED TO CHECK IF THE DATE IS ALREADY BOOKED
+//MAKE SURE ERROR SHOWS WHEN T&CS AND GROUP LEADER POLICY NOT CLICKED
 
 
 const CreateBooking: React.FC = () => {
 
   // Function to send data to the createBooking endpoint
   const submitBooking: SubmitHandler<FormData> = async (data) => {
-    // Format the date to 'DD-MM-YYYY'
-    // const formattedDate = format(new Date(data.booking_date), 'dd-MM-yyyy');
-    // data.booking_date = formattedDate;
-
     try {
       const response = await axios.post("http://192.168.0.139:8000/createBooking", data);
 
@@ -76,6 +119,8 @@ const CreateBooking: React.FC = () => {
       console.error("Error creating booking:", error);
       // Handle error scenarios here
     }
+    console.log(errors)
+    alert('Submitted')
   };
 
   const {
@@ -84,7 +129,7 @@ const CreateBooking: React.FC = () => {
     watch,
     formState: { errors },
   } = useForm<FormData>({
-    resolver: yupResolver(schema), // yup, joi and even your own.
+    resolver: yupResolver(schema) as MyResolverType, // yup, joi and even your own.
     defaultValues: { wheelchair_users: 0 }, // Set default value for wheelchairUsers
   });
 
@@ -97,66 +142,91 @@ const CreateBooking: React.FC = () => {
           style={{
             display: "flex",
             flexDirection: "column",
+            paddingTop: "2vh",
             height: "auto",
             width: "30vw",
           }}
-          onSubmit={handleSubmit((data: FormData) => { 
-            submitBooking(data); 
+          onSubmit={handleSubmit((data: FormData) => {
+            submitBooking(data);
             // console.log(data); 
           })}
         >
           <label>First Name</label>
-          <input 
-          style={{ width: "20vw" }} 
-          {...register("first_name")} 
-          autoComplete="given-name" />
+          <input
+            style={{ width: "20vw" }}
+            {...register("first_name")}
+            autoComplete="given-name" />
+          {errors.first_name && (
+            <p style={{ color: "red" }}>{errors.first_name.message}</p>
+          )}
 
           <label>Surname</label>
-          <input 
-          style={{ width: "20vw" }} 
-          {...register("surname")} 
-          autoComplete="family-name" />
+          <input
+            style={{ width: "20vw" }}
+            {...register("surname")}
+            autoComplete="family-name" />
+          {errors.surname && (
+            <p style={{ color: "red" }}>{errors.surname.message}</p>
+          )}
 
           <label>Contact Number</label>
-          <input 
-          style={{ width: "20vw" }} 
-          type="string" {...register("contact_number")} 
-          autoComplete="tel" />
+          <input
+            style={{ width: "20vw" }}
+            type="string" {...register("contact_number")}
+            autoComplete="tel" />
+          {errors.contact_number && (
+            <p style={{ color: "red" }}>{errors.contact_number.message}</p>
+          )}
 
           <label>Email</label>
-          <input 
-          style={{ width: "20vw" }} 
-          type="string" {...register("email_address")} 
-          autoComplete="email" />
+          <input
+            style={{ width: "20vw" }}
+            type="string" {...register("email_address")}
+            autoComplete="email" />
+          {errors.email_address && (
+            <p style={{ color: "red" }}>{errors.email_address.message}</p>
+          )}
 
           <label>House Number</label>
           <input
             style={{ width: "20vw" }}
-            type="string" {...register("house_number")} 
+            type="string" {...register("house_number")}
             autoComplete="address-line1" />
+          {errors.house_number && (
+            <p style={{ color: "red" }}>{errors.house_number.message}</p>
+          )}
 
           <label>Steet Name</label>
           <input
             style={{ width: "20vw" }}
-            type="string" {...register("street_name")} 
+            type="string" {...register("street_name")}
             autoComplete="address-line2" />
+          {errors.street_name && (
+            <p style={{ color: "red" }}>{errors.street_name.message}</p>
+          )}
 
           <label>City</label>
           <input
             style={{ width: "20vw" }}
-            type="string" {...register("city")} 
+            type="string" {...register("city")}
             autoComplete="address-level2" />
+          {errors.city && (
+            <p style={{ color: "red" }}>{errors.city.message}</p>
+          )}
 
           <label>Postcode</label>
           <input
             style={{ width: "10vw" }}
-            type="string" {...register("postcode")} 
+            type="string" {...register("postcode")}
             autoComplete="postal-code" />
           <br />
           <label>Booking Date</label>
           <input
             style={{ width: "10vw" }}
             type="date" {...register("booking_date")} />
+          {errors.booking_date && (
+            <p style={{ color: "red" }}>{errors.booking_date.message}</p>
+          )}
           <br />
           <label>Wheelchair Users</label>
           <input
@@ -169,18 +239,20 @@ const CreateBooking: React.FC = () => {
           <br />
           <div>
             <label>Smoking</label>
-            {/* NEED TO CHANGE THIS TO A STRING FOR YES AND NO HERE AND IN BACKEND? (EASIER THAN USING BOOLEAN) */}
             <label>
               <input type="radio"
-                value="true" 
+                value="true"
                 {...register("smoking")} />
               Yes
             </label>
             <label>
-              <input type="radio" 
-              value="false" 
-              {...register("smoking")} />
+              <input type="radio"
+                value="false"
+                {...register("smoking")} />
               No
+              {errors.smoking && (
+                <p style={{ color: "red" }}>{errors.smoking.message}</p>
+              )}
             </label>
           </div>
           <br />
@@ -199,6 +271,9 @@ const CreateBooking: React.FC = () => {
             <label>
               <input type="radio" value="Coven" {...register("destination")} />
               Coven( £100)
+              {errors.destination && (
+                <p style={{ color: "red" }}>{errors.destination.message}</p>
+              )}
             </label>
           </div>
           <br />
@@ -224,6 +299,9 @@ const CreateBooking: React.FC = () => {
               value="Pub Meal"
               {...register("lunch_arrangements")} />
             Pub Meal
+            {errors.lunch_arrangements && (
+              <p style={{ color: "red" }}>{errors.lunch_arrangements.message}</p>
+            )}
           </label>
           <br />
           <label>Other Requirements</label>
@@ -233,20 +311,27 @@ const CreateBooking: React.FC = () => {
           <br />
           <label>
             I have read and agree to the terms and conditions
+            <input
+              type="checkbox"
+              {...register("terms_and_conditions")}
+            />
+            {errors.terms_and_conditions && (
+              <p style={{ color: "red" }}>{errors.terms_and_conditions.message}</p>
+            )}
           </label>
-          <input
-            type="checkbox"
-            {...register("terms_and_conditions")}
-          />
           <label>
             I have read and agree to the group leader policy
+            <input
+              type="checkbox"
+              {...register("group_leader_policy")}
+            />
+            {errors.group_leader_policy && (
+              <p style={{ color: "red" }}>{errors.group_leader_policy.message}</p>
+            )}
           </label>
-          <input
-            type="checkbox"
-            {...register("group_leader_policy")}
-          />
 
           <input type="submit" />
+          <br />
         </form>
       </FormContainer>
     </FormRoot>

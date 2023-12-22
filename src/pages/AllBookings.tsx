@@ -202,7 +202,7 @@ const AllBookings = () => {
           <Button onClick={handleNextMonth}>Next Month</Button>
         </ButtonContainer>
       </div>
-      <CalendarContainer>
+      <>
 
         <TableContainer>
           <Table>
@@ -262,19 +262,18 @@ const AllBookings = () => {
                       textDecoration: "underline",
                       cursor: "pointer",
                     }}
-                    onClick={() => { alert(`Booking for ${new Date(item.booking_date).toLocaleDateString('en-GB')} to be edited`) }}
+                    onClick={() => {
+                       alert(`Booking for ${new Date(item.booking_date).toLocaleDateString('en-GB')} to be edited`) 
+                      }}
                   >
                     EDIT
                   </td>
-
                 </tr>
               ))}
             </tbody>
-
           </Table>
         </TableContainer>
-
-      </CalendarContainer>
+      </>
     </Root>
   );
 };
