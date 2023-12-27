@@ -29,7 +29,7 @@ export const FormContainer = styled.div`
   border: 1px solid #051101;
   border-radius: 5px;
   box-shadow: 0 0 20px 2px #2f2f2f;
-  height: auto;
+  height: ;
   width: 40vw;
   display: flex;
   flex-direction: column;
@@ -203,5 +203,62 @@ export const TableContainer = styled.div`
   align-items: center;
   font-size: calc(10px + 2vmin);
   color: #051101;
+  font-family: "Roboto, Arial, Helvetica, sans-serif";
+`;
+
+export const ModalRoot = styled.div`
+  z-index: 100;
+  background-color: green;
+  border: 1px solid #051101;
+  box-shadow: 0 0 20px 2px #2f2f2f;
+  height: 50vh;
+  width: 30vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: calc(8px + 2vmin);
+  color: #051101;
+  font-family: "Roboto, Arial, Helvetica, sans-serif";
+`;
+
+export const ModalHeader = styled.div`
+  background-color: green;
+  border: 1px solid #051101;
+  height: 10vh;
+  width: 60vw;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(8px + 2vmin);
+  color: #eaf3e7;
+  font-family: "Roboto, Arial, Helvetica, sans-serif";
+`; 
+
+export const ModalContent = styled.div`
+  background-color: #eaf3e7;
+  border: 1px solid #051101;
+  height: 30vh;
+  width: 60vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(8px + 2vmin);
+  color: #051101;
+  font-family: "Roboto, Arial, Helvetica, sans-serif";
+`;
+
+export const ModalFooter = styled.div`
+  background-color: green;
+  border: 1px solid #051101;
+  height: 10vh;
+  width: 60vw;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(8px + 2vmin);
+  color: #eaf3e7;
   font-family: "Roboto, Arial, Helvetica, sans-serif";
 `;

@@ -1,12 +1,12 @@
 import React from "react";
-import { Root, FormRoot, FormContainer } from "../styles";
-import { format } from 'date-fns';
+import { useNavigate } from 'react-router-dom';
+import { ModalRoot, Root, FormRoot, FormContainer } from "../styles";
 import axios from "axios";
 import { useForm, SubmitHandler, Resolver } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import Modal from "../components/modal/Modal";
 
-//ADD POTSAL ADDRESS TO FORM
 
 interface FormData {
   first_name: string;
@@ -28,28 +28,28 @@ interface FormData {
   // bookingMonth: string;
 }
 
-
 const isBookingDateAvailable = async (date: string) => {
   try {
-    // Check if the date is in the future
     const currentDate = new Date();
     const selectedDate = new Date(date);
 
     if (selectedDate <= currentDate) {
-      return false; // Date is not in the future
+      return false;
     }
 
-    // Check if there are existing bookings on the given date
-    const response = await axios.get(`http://192.168.0.139:8000/bookings?date=${date}`);
-    const existingBookings = response.data; // Adjust this based on your API response structure
+    const response = await axios.get(`http://192.168.0.139:8000/dates?date=${date}`);
+    const bookedDates = response.data;
+    // console.log('Selected Date:', selectedDate);
+    // console.log('Booked Dates:', bookedDates);
+    const isDateBooked = bookedDates.some((bookedDate: string) => new Date(bookedDate).getTime() === selectedDate.getTime());
+    // console.log('Is Date Booked:', isDateBooked);
 
-    return existingBookings.length === 0; // Date is available if there are no existing bookings
+    return !isDateBooked;
   } catch (error) {
     console.error('Error checking booking availability:', error);
-    return false; // Assume date is not available in case of an error
+    return false;
   }
 };
-
 
 const schema = yup.object().shape({
   first_name: yup.string().required('You must enter a first name'),
@@ -75,13 +75,12 @@ const schema = yup.object().shape({
     })
     .test({
       name: 'is-booking-date-available',
-      message: 'There is already a booking on this date',
+      message: 'There is already a booking on this date, please choose another',
       test: async function (value) {
         // Only perform the validation if the date is in the future
         if (value) {
           return await isBookingDateAvailable(value);
         }
-
         return false; // Skip validation if date is not provided
       },
     }),
@@ -93,20 +92,23 @@ const schema = yup.object().shape({
   destination: yup.string().required("Please select a destination"),
   lunch_arrangements: yup.string().required("Please select a lunch option"),
   notes: yup.string().notRequired(),
-  terms_and_conditions: yup.boolean().required('Please accept the terms and conditions'),
-  group_leader_policy: yup.boolean().required('Please accept the group leader policy'),
+  terms_and_conditions: yup.boolean().oneOf([true], 'Please accept the terms and conditions'),
+  group_leader_policy: yup.boolean().oneOf([true], 'Please accept the group leader policy'),
 });
 
 type MyResolverType = Resolver<FormData, typeof yupResolver>;
 
-
-//TODO 
-//NEED TO CHECK DATE IS AVAILABLE AND IN THE FUTURE.DONE
-//ALSO NEED TO CHECK IF THE DATE IS ALREADY BOOKED
-//MAKE SURE ERROR SHOWS WHEN T&CS AND GROUP LEADER POLICY NOT CLICKED
-
-
 const CreateBooking: React.FC = () => {
+  const [showModal, setShowModal] = React.useState<boolean>(false);
+
+  const navigate = useNavigate();
+
+  const ModalClickHandler = () => {
+    setShowModal(false);
+    navigate('/');
+    //SEND EMAIL
+  };
+
 
   // Function to send data to the createBooking endpoint
   const submitBooking: SubmitHandler<FormData> = async (data) => {
@@ -115,13 +117,15 @@ const CreateBooking: React.FC = () => {
 
       console.log("Booking created successfully:", response.data);
       // You can perform additional actions after a successful booking creation here
+      setShowModal(true);
+
+      await axios.post("http://192.168.0.139:8000/sendEmail", data);
+
     } catch (error) {
       console.error("Error creating booking:", error);
       // Handle error scenarios here
     }
-    console.log(errors)
-    alert('Submitted')
-  };
+  }
 
   const {
     register,
@@ -133,9 +137,16 @@ const CreateBooking: React.FC = () => {
     defaultValues: { wheelchair_users: 0 }, // Set default value for wheelchairUsers
   });
 
-
   return (
     <FormRoot>
+      {showModal && (
+        <Modal
+          onClick={ModalClickHandler}
+          header="Booking Submitted"
+          content="Booking has been submitted successfully. You will receive an email confirmation shortly."
+          footer="Thank you for booking with us"
+        />
+      )}
       <h1>Booking Form</h1>
       <FormContainer>
         <form
@@ -219,6 +230,9 @@ const CreateBooking: React.FC = () => {
             style={{ width: "10vw" }}
             type="string" {...register("postcode")}
             autoComplete="postal-code" />
+          {errors.postcode && (
+            <p style={{ color: "red" }}>{errors.postcode.message}</p>
+          )}
           <br />
           <label>Booking Date</label>
           <input
@@ -319,6 +333,7 @@ const CreateBooking: React.FC = () => {
               <p style={{ color: "red" }}>{errors.terms_and_conditions.message}</p>
             )}
           </label>
+
           <label>
             I have read and agree to the group leader policy
             <input

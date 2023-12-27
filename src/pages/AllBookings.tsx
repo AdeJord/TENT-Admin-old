@@ -52,7 +52,7 @@ const AllBookings = () => {
   const getBookingsForMonth = (month: string) => {
     // console.log('month:', month);
     // console.log('data:', data);
-    data.forEach(booking => console.log('booking:', booking));
+    // data.forEach(booking => console.log('booking:', booking));
     return data.filter((booking) => booking.bookingmonth === month);
   };
 
@@ -69,7 +69,7 @@ const AllBookings = () => {
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
-    { console.log(getBookingsForMonth(targetMonth)) }
+    // { console.log(getBookingsForMonth(targetMonth)) }
   }, [targetMonth]);
 
 
