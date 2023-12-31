@@ -8,9 +8,11 @@ import {
   TableContainer
 } from "../styles";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 // Define an interface for the booking object
 interface Booking {
+  id: any;
   booking_date: string;
   first_name: string;
   surname: string;
@@ -262,11 +264,10 @@ const AllBookings = () => {
                       textDecoration: "underline",
                       cursor: "pointer",
                     }}
-                    onClick={() => {
-                       alert(`Booking for ${new Date(item.booking_date).toLocaleDateString('en-GB')} to be edited`) 
-                      }}
                   >
-                    EDIT
+                    <Link to={`/edit/${item.id}`}> {/* Use item.id instead of index */}
+                      EDIT
+                    </Link>
                   </td>
                 </tr>
               ))}

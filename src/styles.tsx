@@ -208,10 +208,7 @@ export const TableContainer = styled.div`
 
 export const ModalRoot = styled.div`
   z-index: 100;
-  background-color: green;
-  border: 1px solid #051101;
-  box-shadow: 0 0 20px 2px #2f2f2f;
-  height: 50vh;
+  height: 60vh;
   width: 30vw;
   display: flex;
   flex-direction: column;
@@ -219,6 +216,7 @@ export const ModalRoot = styled.div`
   font-size: calc(8px + 2vmin);
   color: #051101;
   font-family: "Roboto, Arial, Helvetica, sans-serif";
+  transition: all 0.3s ease; /* Add transition effect for all properties with a duration of 0.3 seconds and ease timing function */
 `;
 
 export const ModalHeader = styled.div`
@@ -237,14 +235,15 @@ export const ModalHeader = styled.div`
 
 export const ModalContent = styled.div`
   background-color: #eaf3e7;
+  padding: 15px;
   border: 1px solid #051101;
-  height: 30vh;
-  width: 60vw;
+  height: auto;
+  width: Calc(60vw - 30px);
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: left;
   justify-content: center;
-  font-size: calc(8px + 2vmin);
+  font-size: calc(5px + 2vmin);
   color: #051101;
   font-family: "Roboto, Arial, Helvetica, sans-serif";
 `;
@@ -260,5 +259,62 @@ export const ModalFooter = styled.div`
   justify-content: center;
   font-size: calc(8px + 2vmin);
   color: #eaf3e7;
+  font-family: "Roboto, Arial, Helvetica, sans-serif";
+`;
+
+export const DangerModalRoot = styled.div`
+  z-index: 100;
+  height: 60vh;
+  width: 30vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: calc(8px + 2vmin);
+  color: #ffffff; /* Change text color to white */
+  font-family: "Roboto, Arial, Helvetica, sans-serif";
+  transition: all 0.9s ease;
+  // background-color: #ff0000; /* Change background color to red */
+`;
+
+export const DangerModalHeader = styled.div`
+  background-color: #cc0000; /* Change header background color to a darker red */
+  border: 1px solid #ff0000; /* Change border color to red */
+  height: 10vh;
+  width: 60vw;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(8px + 2vmin);
+  color: #ffffff;
+  font-family: "Roboto, Arial, Helvetica, sans-serif";
+`;
+
+export const DangerModalContent = styled.div`
+  background-color: #ffcccc; /* Change content background color to a lighter red */
+  padding: 15px;
+  border: 1px solid #ff0000;
+  height: auto;
+  width: calc(60vw - 30px);
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  justify-content: center;
+  font-size: calc(5px + 2vmin);
+  color: #051101;
+  font-family: "Roboto, Arial, Helvetica, sans-serif";
+`;
+
+export const DangerModalFooter = styled.div`
+  background-color: #cc0000; /* Change footer background color to a darker red */
+  border: 1px solid #ff0000;
+  height: 10vh;
+  width: 60vw;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(5px + 2vmin);
+  color: #ffffff;
   font-family: "Roboto, Arial, Helvetica, sans-serif";
 `;

@@ -1,11 +1,15 @@
 import React from "react";
 import { useNavigate } from 'react-router-dom';
-import { ModalRoot, Root, FormRoot, FormContainer } from "../styles";
+import {
+  FormRoot,
+  FormContainer
+} from "../styles";
 import axios from "axios";
 import { useForm, SubmitHandler, Resolver } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import Modal from "../components/modal/Modal";
+import Backdrop from "../components/modal/ModalBackdrop";
 
 
 interface FormData {
@@ -25,7 +29,7 @@ interface FormData {
   notes?: string | undefined;
   terms_and_conditions: boolean;
   group_leader_policy: boolean;
-  // bookingMonth: string;
+  // Need to add group size
 }
 
 const isBookingDateAvailable = async (date: string) => {
@@ -100,6 +104,12 @@ type MyResolverType = Resolver<FormData, typeof yupResolver>;
 
 const CreateBooking: React.FC = () => {
   const [showModal, setShowModal] = React.useState<boolean>(false);
+  const [formData, setFormData] = React.useState<FormData | null>(null);
+  const [selectedDestination, setSelectedDestination] = React.useState<string | null>(null);
+
+
+  //IF AUTHERLEY IS SELECTED THERE CAN BE NO PUB MEAL
+
 
   const navigate = useNavigate();
 
@@ -109,6 +119,56 @@ const CreateBooking: React.FC = () => {
     //SEND EMAIL
   };
 
+  // Helper function to get lunch arrangement description
+  const getLunchArrangementDescription = (lunchArrangement: string | undefined) => {
+    switch (lunchArrangement) {
+      case 'Packed Lunch':
+        return ' you will be bringing your own packed lunch.';
+      case 'Fish and Chips':
+        return ' you will have fish and chips delivered to the boat.';
+      case 'Pub Meal':
+        return ' where you will be eating at the pub.';
+      default:
+        return 'where lunch arrangements are not specified.';
+    }
+  };
+
+  //Helper to get the wheechair users message
+  const getWheelchairUsersDescription = (wheelchairUsers: number) => {
+    switch (wheelchairUsers) {
+      case 0:
+        return 'There are no wheelchair users on this trip Please let us know if this changes so we can have the lift ready.';
+      case 1:
+        return 'There is 1 wheelchair user on this trip. The lift will be ready for you.';
+      case 2:
+        return 'There are 2 wheelchair users on this trip. The lift will be ready for you.';
+      default:
+        return 'There are no wheelchair users on this trip. The lift will be ready for you.';
+    }
+  };
+
+  const modalContent = (
+    <>
+      <p>Your boat trip for the
+        {' '}
+        {formData?.booking_date && new Date(formData?.booking_date).toLocaleDateString('en-GB')}
+        {' '}
+        has been successfully booked.
+      </p>
+      <p>
+        This is a {formData?.smoking ? 'smoking' : 'non-smoking'} trip to
+        {' '}
+        {formData?.destination} and
+        {getLunchArrangementDescription(formData?.lunch_arrangements)}
+      </p>
+      <p>
+        {getWheelchairUsersDescription(formData?.wheelchair_users ?? 0)}
+      </p>
+      <p>You will receive an email with booking confirmation.</p>
+    </>
+  );
+
+
 
   // Function to send data to the createBooking endpoint
   const submitBooking: SubmitHandler<FormData> = async (data) => {
@@ -116,16 +176,21 @@ const CreateBooking: React.FC = () => {
       const response = await axios.post("http://192.168.0.139:8000/createBooking", data);
 
       console.log("Booking created successfully:", response.data);
-      // You can perform additional actions after a successful booking creation here
+      setFormData(data);
       setShowModal(true);
 
-      await axios.post("http://192.168.0.139:8000/sendEmail", data);
+      // Send email with specific properties
+      const { email_address, first_name, booking_date } = data;
+      await axios.post("http://192.168.0.139:8000/sendEmail", { email_address, first_name, booking_date });
+
+      // You can perform additional actions after a successful booking creation here
 
     } catch (error) {
       console.error("Error creating booking:", error);
       // Handle error scenarios here
     }
-  }
+  };
+
 
   const {
     register,
@@ -140,12 +205,16 @@ const CreateBooking: React.FC = () => {
   return (
     <FormRoot>
       {showModal && (
-        <Modal
-          onClick={ModalClickHandler}
-          header="Booking Submitted"
-          content="Booking has been submitted successfully. You will receive an email confirmation shortly."
-          footer="Thank you for booking with us"
-        />
+        <>
+          <Backdrop>
+            <Modal
+              onClick={ModalClickHandler}
+              header="Booking Submitted"
+              content={modalContent}
+              footer="Thank you for booking with us"
+            />
+          </Backdrop>
+        </>
       )}
       <h1>Booking Form</h1>
       <FormContainer>
@@ -192,11 +261,13 @@ const CreateBooking: React.FC = () => {
           <label>Email</label>
           <input
             style={{ width: "20vw" }}
-            type="string" {...register("email_address")}
+            // type="string" {...register("email_address")}
+            type="text" {...register("email_address")}
             autoComplete="email" />
           {errors.email_address && (
             <p style={{ color: "red" }}>{errors.email_address.message}</p>
           )}
+          <small>Your booking confirmation will be sent to this email address.</small>
 
           <label>House Number</label>
           <input
@@ -278,13 +349,19 @@ const CreateBooking: React.FC = () => {
                 type="radio"
                 value="Autherley"
                 {...register("destination")}
+                onChange={() => setSelectedDestination("Autherley")}
               />
               Autherley (£130)
             </label>
             <br />
             <label>
-              <input type="radio" value="Coven" {...register("destination")} />
-              Coven( £100)
+              <input
+                type="radio"
+                value="Coven"
+                {...register("destination")}
+                onChange={() => setSelectedDestination("Coven")}
+              />
+              Coven(£100)
               {errors.destination && (
                 <p style={{ color: "red" }}>{errors.destination.message}</p>
               )}
@@ -311,7 +388,9 @@ const CreateBooking: React.FC = () => {
             <input
               type="radio"
               value="Pub Meal"
-              {...register("lunch_arrangements")} />
+              {...register("lunch_arrangements")}
+              disabled={selectedDestination === "Autherley"}
+            />
             Pub Meal
             {errors.lunch_arrangements && (
               <p style={{ color: "red" }}>{errors.lunch_arrangements.message}</p>
