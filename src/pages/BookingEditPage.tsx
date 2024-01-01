@@ -5,6 +5,7 @@ import Modal from '../components/modal/Modal';
 import DangerModal from '../components/modal/DangerModal';
 import Backdrop from '../components/modal/ModalBackdrop';
 import { Root, FormRoot, FormContainer, Button, ButtonContainer } from '../styles';
+import { set } from 'date-fns';
 
 const BASE_URL = 'http://192.168.0.139:8000'; // Replace with your API base URL
 
@@ -28,11 +29,21 @@ export const updateBookingData = async (bookingId: any, formData: any) => {
     }
 };
 
+const deleteBookingData = async (bookingId: any) => {
+    try {
+        const response = await axios.delete(`${BASE_URL}/deleteBooking/${bookingId}`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
 const BookingEditPage = () => {
     const { bookingId } = useParams();
     const navigate = useNavigate();
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [showDangerModal, setShowDangerModal] = useState(false);
+    const [showSuccessDeleteModal, setShowSuccessDeleteModal] = useState(false);
 
     const [formData, setFormData] = useState({
         first_name: '',
@@ -81,6 +92,8 @@ const BookingEditPage = () => {
         });
     };
 
+
+
     // Handle form submission (you can customize this part based on your API)
     const handleSubmit = (e: { preventDefault: () => void; }) => {
         e.preventDefault();
@@ -99,14 +112,36 @@ const BookingEditPage = () => {
         setShowDangerModal(true);
     };
 
-    const handleSuccessModalClick = () => {
+    const handleDeleteSuccessModalClick = () => {
         setShowSuccessModal(false); // Close the modal
+        setShowSuccessDeleteModal(true); // Show the success modal on successful update
         navigate(`/`); // Navigate to the desired page
     };
 
-    const handleDangerModalClick = () => {
+    const handleDangerModalDeleteClick = () => {
+        deleteBookingData(bookingId)
+            .then(() => {
+                // Delete operation succeeded
+                setShowDangerModal(false); // Close the delete modal
+                setShowSuccessDeleteModal(true); // Show the success modal
+                // Navigate to the desired page if needed
+                // alert('Booking has been deleted');
+                // navigate(`/`);
+            })
+            .catch((error) => {
+                // Delete operation failed
+                console.error(error);
+                setShowDangerModal(true); // Show the danger modal on error
+            });
+    };
+    
+    const handleDangerModalCancel = () => {
         setShowDangerModal(false); // Close the modal
-        alert('Booking has been deleted');
+    }
+
+    const handleUpdateSuccessModalClick = () => {
+        setShowSuccessModal(false); // Close the modal
+        navigate(`/`); // Navigate to the desired page
     }
 
     return (
@@ -117,20 +152,48 @@ const BookingEditPage = () => {
                         <Modal
                             header="Update Submitted"
                             content="Booking has been updated"
-                            footer="Thank you for booking with us"
+                            footer="Thank you"
                             // Assuming your Modal component can accept an onClick prop
-                            onClick={handleSuccessModalClick}
+                            onClick={handleUpdateSuccessModalClick}
+                        />
+                    </Backdrop>
+                )}
+                {showSuccessDeleteModal && (
+                    <Backdrop>
+                        <Modal
+                            header="Booking for {formData.booking_date} has been deleted"
+                            content="Booking has successfully been deleted"
+                            footer="Thank you"
+                            // Assuming your Modal component can accept an onClick prop
+                            onClick={handleDeleteSuccessModalClick}
                         />
                     </Backdrop>
                 )}
                 {showDangerModal && (
                     <Backdrop>
                         <DangerModal
-                            header="WARNING"
-                            content="You are about to delete this booking. Are you sure?"
-                            footer="Click 'DELETE' to delete this booking or 'CANCEL' to return to the booking page"
-                            // Assuming your Modal component can accept an onClick prop
-                            onClick={handleDangerModalClick}
+                            onClick={() => setShowDangerModal(false)} // Close the modal when clicked outside
+                            header="Delete Confirmation"
+                            content="Are you sure you want to delete this booking?"
+                            footer={
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        flexDirection: "row",
+                                    }}>
+
+                                    <Button
+                                        onClick={handleDangerModalCancel}
+                                        type="submit"
+                                        style={{ backgroundColor: "#EAF3E7", color: "#051101", fontSize: "calc(5px + 2vmin)" }}
+                                    >CANCEL</Button>
+                                    <Button
+                                        onClick={handleDangerModalDeleteClick}
+                                        type="submit"
+                                        style={{ backgroundColor: "red", color: "#051101", fontSize: "calc(5px + 2vmin)" }}
+                                    >DELETE</Button>
+                                </div>
+                            }
                         />
                     </Backdrop>
                 )}
@@ -333,7 +396,7 @@ const BookingEditPage = () => {
                                         border: 'none'
                                     }}
                                     type='button'
-                                    >DELETE </Button>
+                                >DELETE </Button>
                             </div>
                         </div>
                         <br />

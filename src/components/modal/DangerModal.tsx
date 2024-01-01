@@ -1,4 +1,4 @@
-import { FC, MouseEventHandler, ReactNode } from "react";
+import { FC, MouseEventHandler, ReactNode, useState } from "react";
 import {
     Root,
     DangerModalRoot,
@@ -9,6 +9,7 @@ import {
     ButtonContainer
 } from "../../styles";
 import ReactDOM from "react-dom";
+import Modal from "./Modal";
 
 interface ModalProps {
     onClick: MouseEventHandler<HTMLDivElement>;
@@ -17,7 +18,11 @@ interface ModalProps {
     footer: ReactNode;
 }
 
-const Modal: FC<ModalProps> = ({ onClick, header, content, footer }: ModalProps) => {
+
+const DangerModal: FC<ModalProps> = ({ onClick, header, content, footer }: ModalProps) => {
+    
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+    
     const modalContent = (
         <Root>
             <DangerModalRoot>
@@ -26,26 +31,6 @@ const Modal: FC<ModalProps> = ({ onClick, header, content, footer }: ModalProps)
                         <DangerModalHeader><h3>{header}</h3></DangerModalHeader>
                         <DangerModalContent>{content}</DangerModalContent>
                         <DangerModalFooter>{footer}</DangerModalFooter>
-                        <ButtonContainer
-                        style={{
-                            backgroundColor: "#cc0000",
-                            width: "auto",
-                            height: "auto",
-                            display: "flex",
-                            flexDirection: "row",
-                            justifyContent: "space-evenly",
-                        }}>
-                        <Button
-                            onClick={onClick as unknown as MouseEventHandler<HTMLButtonElement>}
-                            type="submit"
-                            style={{ backgroundColor: "#EAF3E7", color: "#051101", fontSize: "calc(5px + 2vmin)" }}
-                        >CANCEL</Button>
-                        <Button
-                            onClick={onClick as unknown as MouseEventHandler<HTMLButtonElement>}
-                            type="submit"
-                            style={{ backgroundColor: "red", color: "#051101", fontSize: "calc(5px + 2vmin)" }}
-                        >DELETE</Button>
-                        </ButtonContainer>
                     </div>
                 </div>
             </DangerModalRoot>
@@ -56,4 +41,4 @@ const Modal: FC<ModalProps> = ({ onClick, header, content, footer }: ModalProps)
 };
 
 
-export default Modal;
+export default DangerModal;

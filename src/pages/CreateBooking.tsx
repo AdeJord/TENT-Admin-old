@@ -41,10 +41,11 @@ const isBookingDateAvailable = async (date: string) => {
       return false;
     }
 
+    //Get booked dates from the API
     const response = await axios.get(`http://192.168.0.139:8000/dates?date=${date}`);
     const bookedDates = response.data;
-    // console.log('Selected Date:', selectedDate);
-    // console.log('Booked Dates:', bookedDates);
+    console.log('Selected Date:', selectedDate);
+    console.log('Booked Dates:', bookedDates);
     const isDateBooked = bookedDates.some((bookedDate: string) => new Date(bookedDate).getTime() === selectedDate.getTime());
     // console.log('Is Date Booked:', isDateBooked);
 
