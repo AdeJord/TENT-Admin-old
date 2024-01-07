@@ -62,10 +62,11 @@ const AllBookings = () => {
 
   useEffect(() => {
     axios
-      .get("http://192.168.0.139:8000/bookings")
+      .get("http://213.171.209.90:8080/bookings")
       .then((response) => {
         // console.log("API Response:", response.data); // Log the response
         setData(response.data);
+        
         // console.log("Data:", response.data);
       })
       .catch((error) => {

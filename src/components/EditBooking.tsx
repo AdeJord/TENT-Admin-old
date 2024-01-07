@@ -57,7 +57,6 @@ const schema = yup.object().shape({
   // crew1: yup.string().required(),
   // crew2: yup.string().required(),
   // complete: yup.string().required(),
-
 });
 
 
@@ -70,7 +69,7 @@ const editBooking: React.FC = () => {
     // data.booking_date = formattedDate;
 
     try {
-      const response = await axios.post("http://192.168.0.139:8000/createBooking", data);
+      const response = await axios.post("http://213.171.209.90:8080/createBooking", data);
 
       console.log("Booking created successfully:", response.data);
       // You can perform additional actions after a successful booking creation here

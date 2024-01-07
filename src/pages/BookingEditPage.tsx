@@ -7,7 +7,7 @@ import Backdrop from '../components/modal/ModalBackdrop';
 import { Root, FormRoot, FormContainer, Button, ButtonContainer } from '../styles';
 import { set } from 'date-fns';
 
-const BASE_URL = 'http://192.168.0.139:8000'; // Replace with your API base URL
+const BASE_URL = 'http://213.171.209.90:8080'; // Replace with your API base URL
 
 // Define the fetchBookingData function
 const fetchBookingData = async (bookingId: any) => {

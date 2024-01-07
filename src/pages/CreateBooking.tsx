@@ -42,7 +42,7 @@ const isBookingDateAvailable = async (date: string) => {
     }
 
     //Get booked dates from the API
-    const response = await axios.get(`http://192.168.0.139:8000/dates?date=${date}`);
+    const response = await axios.get(`http://213.171.209.90:8080/dates?date=${date}`);
     const bookedDates = response.data;
     console.log('Selected Date:', selectedDate);
     console.log('Booked Dates:', bookedDates);
@@ -174,7 +174,7 @@ const CreateBooking: React.FC = () => {
   // Function to send data to the createBooking endpoint
   const submitBooking: SubmitHandler<FormData> = async (data) => {
     try {
-      const response = await axios.post("http://192.168.0.139:8000/createBooking", data);
+      const response = await axios.post("http://213.171.209.90:8080/createBooking", data);
 
       console.log("Booking created successfully:", response.data);
       setFormData(data);
@@ -182,7 +182,7 @@ const CreateBooking: React.FC = () => {
 
       // Send email with specific properties
       const { email_address, first_name, booking_date } = data;
-      await axios.post("http://192.168.0.139:8000/sendEmail", { email_address, first_name, booking_date });
+      await axios.post("http://213.171.209.90:8080/sendEmail", { email_address, first_name, booking_date });
 
       // You can perform additional actions after a successful booking creation here
 
