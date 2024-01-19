@@ -69,7 +69,7 @@ const editBooking: React.FC = () => {
     // data.booking_date = formattedDate;
 
     try {
-      const response = await axios.post("http://213.171.209.90:8080/createBooking", data);
+      const response = await axios.post("https://adejord.co.ukcreateBooking", data);
 
       console.log("Booking created successfully:", response.data);
       // You can perform additional actions after a successful booking creation here

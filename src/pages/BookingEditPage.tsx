@@ -7,7 +7,7 @@ import Backdrop from '../components/modal/ModalBackdrop';
 import { Root, FormRoot, FormContainer, Button, ButtonContainer } from '../styles';
 import { set } from 'date-fns';
 
-const BASE_URL = 'http://213.171.209.90:8080'; // Replace with your API base URL
+const BASE_URL = 'https://adejord.co.uk'; // Replace with your API base URL
 
 // Define the fetchBookingData function
 const fetchBookingData = async (bookingId: any) => {
@@ -161,7 +161,7 @@ const BookingEditPage = () => {
                 {showSuccessDeleteModal && (
                     <Backdrop>
                         <Modal
-                            header="Booking for {formData.booking_date} has been deleted"
+                            header="DELETED"
                             content="Booking has successfully been deleted"
                             footer="Thank you"
                             // Assuming your Modal component can accept an onClick prop

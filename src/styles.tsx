@@ -2,14 +2,16 @@ import styled from "./styled";
 
 export const Root = styled.div`
   background-color: #eaf3e7;
-  height: 90vh;
+  height: 100vh;
   width: 100vw;
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: calc(10px + 2vmin);
+  font-size: 12px;
   color: #051101;
   font-family: "Roboto, Arial, Helvetica, sans-serif";
+  padding: 0;
+  margin: 0;
 `;
 
 export const FormRoot = styled.div`
@@ -167,7 +169,7 @@ export const Button = styled.button`
   text-align: center;
   background-color: gray;
   color: #051101;
-  font-size: 12px;
+  font-size: 10px;
   font-family: "Roboto, Arial, Helvetica, sans-serif";
   border: 1px solid #051101;
   border-radius: 5px;
@@ -182,139 +184,147 @@ export const Button = styled.button`
 `;
 
 export const Table = styled.table`
-  font-family: "Roboto, Arial, Helvetica, sans-serif";
-  font-size: calc(2px + 1vmin);
-  border-collapse: collapse;
+font-family: "Roboto, Arial, Helvetica, sans-serif";
+font-size: calc(2px + 1vmin);
+border-collapse: collapse;
 
-  th,
-  td {
-    border: 1px solid #051101;
-    padding: 8px;
-    text-align: center;
-  }
+th, td {
+  border: 1px solid #051101;
+  padding: 8px;
+  text-align: center;
+`;
+
+export const TableCell = styled.td`
+  white-space: nowrap;        /* Prevent text wrapping */
+  overflow: hidden;           /* Hide overflow content */
+  text-overflow: ellipsis;    /* Show ellipsis (...) for truncated text */
 `;
 
 export const TableContainer = styled.div`
   background-color: #eaf3e7;
-  height: 90vh;
-  width: 80vw;
+  // box-sizing: border-box;
+  height: auto;
+  width: calc(100vw - 15px); /* Adjust 15px to the actual scrollbar width if needed */
+  overflow-x: auto;
+  width: 95vw;
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: calc(10px + 2vmin);
   color: #051101;
   font-family: "Roboto, Arial, Helvetica, sans-serif";
+  -webkit-overflow-scrolling: touch; // Add momentum to scrolling on iOS devices
+  overflow-scrolling: touch;
 `;
 
 export const ModalRoot = styled.div`
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Soft shadow for depth */
   z-index: 100;
-  height: 60vh;
-  width: 30vw;
+  height: auto; /* Adjust the height to fit content */
+  width: auto; /* Adjust the width for a less narrow appearance */
   display: flex;
   flex-direction: column;
   align-items: center;
   font-size: calc(8px + 2vmin);
-  color: #051101;
+  color: #333; /* Softer text color */
   font-family: "Roboto, Arial, Helvetica, sans-serif";
-  transition: all 0.3s ease; /* Add transition effect for all properties with a duration of 0.3 seconds and ease timing function */
+  transition: all 0.3s ease;
+  border-radius: 10px; /* Rounded corners */
+  margin-top: -30vh; // Adjust as needed to move the modal up
+  background-color: #f8f8f8; /* Softer background color */
 `;
 
 export const ModalHeader = styled.div`
-  background-color: green;
-  border: 1px solid #051101;
-  height: 10vh;
-  width: 60vw;
+  background-color: #a0d2a3; /* Softer shade of green */
+  height: 8vh; /* Adjust the header height */
+  width: 100%; /* Make header width consistent with modal width */
   display: flex;
-  flex-direction: row;
   align-items: center;
   justify-content: center;
-  font-size: calc(8px + 2vmin);
-  color: #eaf3e7;
+  font-size: calc(10px + 2vmin);
+  color: #333; /* Softer text color */
   font-family: "Roboto, Arial, Helvetica, sans-serif";
-`; 
+  border-top-left-radius: 10px; /* Rounded corners */
+  border-top-right-radius: 10px; /* Rounded corners */
+`;
 
 export const ModalContent = styled.div`
-  background-color: #eaf3e7;
-  padding: 15px;
-  border: 1px solid #051101;
-  height: auto;
-  width: Calc(60vw - 30px);
+  background-color: #f8f8f8; /* Softer background color */
+  padding: 20px; /* More padding for better spacing */
+  height: auto; /* Auto height to fit content */
+  width: auto /* Content width consistent with modal width */
   display: flex;
   flex-direction: column;
   align-items: left;
-  justify-content: center;
+  justify-content: flex-start; /* Align content to the top */
   font-size: calc(5px + 2vmin);
-  color: #051101;
+  color: #333; /* Softer text color */
   font-family: "Roboto, Arial, Helvetica, sans-serif";
 `;
 
 export const ModalFooter = styled.div`
-  background-color: green;
-  border: 1px solid #051101;
-  height: 10vh;
-  width: 60vw;
+  background-color: #a0d2a3; /* Softer shade of green */
+  height: 8vh; /* Adjust the footer height */
+  width: 100%; /* Make footer width consistent with modal width */
   display: flex;
-  flex-direction: row;
   align-items: center;
   justify-content: center;
-  font-size: calc(8px + 2vmin);
-  color: #eaf3e7;
+  font-size: calc(10px + 2vmin);
+  color: #333; /* Softer text color */
   font-family: "Roboto, Arial, Helvetica, sans-serif";
+  border-bottom-left-radius: 10px; /* Rounded corners */
+  border-bottom-right-radius: 10px; /* Rounded corners */
 `;
 
+
 export const DangerModalRoot = styled.div`
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Soft shadow for depth */
   z-index: 100;
-  height: 60vh;
-  width: 30vw;
+  max-width: 600px; // Maximum width of the modal
+  width: auto; // Modal width is 90% of the viewport width, until it reaches the max-width
+  height: auto; // Let the modal size fit the content
   display: flex;
   flex-direction: column;
   align-items: center;
   font-size: calc(8px + 2vmin);
-  color: #ffffff; /* Change text color to white */
+  color: white;
   font-family: "Roboto, Arial, Helvetica, sans-serif";
-  transition: all 0.9s ease;
-  // background-color: #ff0000; /* Change background color to red */
+  transition: all 0.3s ease;
+  border-radius: 15px; // Soft rounded corners
+  margin-top: -30vh; // Adjust as needed to move the modal up
+  margin-left: auto; // Center the modal horizontally
+  margin-right: auto; // Center the modal horizontally
+  background-color: #ffebee; // Very light red background
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); // Soft shadow for depth
+  position: relative; // For absolute positioning of children
 `;
 
 export const DangerModalHeader = styled.div`
-  background-color: #cc0000; /* Change header background color to a darker red */
-  border: 1px solid #ff0000; /* Change border color to red */
-  height: 10vh;
-  width: 60vw;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(8px + 2vmin);
-  color: #ffffff;
-  font-family: "Roboto, Arial, Helvetica, sans-serif";
+  background-color: #ef9a9a; // Softer shade of red
+  padding: 10px 20px; // Padding inside the header
+  width: 100%; // Header takes the full width of the modal
+  text-align: center; // Centers the text horizontally
+  border-top-left-radius: 15px; // Match DangerModalRoot border radius
+  border-top-right-radius: 15px; // Match DangerModalRoot border radius
 `;
 
 export const DangerModalContent = styled.div`
-  background-color: #ffcccc; /* Change content background color to a lighter red */
-  padding: 15px;
-  border: 1px solid #ff0000;
-  height: auto;
-  width: calc(60vw - 30px);
-  display: flex;
-  flex-direction: column;
-  align-items: left;
-  justify-content: center;
-  font-size: calc(5px + 2vmin);
-  color: #051101;
-  font-family: "Roboto, Arial, Helvetica, sans-serif";
+  background-color: #ffcdd2; // Lighter red for the content background
+  padding: 20px;
+  width: 100%; // Content takes the full width of the modal
+  text-align: left; // Aligns text to the left
+  font-size: calc(8px + 2vmin);
+  color: #212121; // Dark grey for better readability
 `;
 
 export const DangerModalFooter = styled.div`
-  background-color: #cc0000; /* Change footer background color to a darker red */
-  border: 1px solid #ff0000;
-  height: 10vh;
-  width: 60vw;
+  background-color: #ef9a9a; // Softer shade of red for footer
+  padding: 10px 20px; // Padding inside the footer
+  width: 100%; // Footer takes the full width of the modal
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(5px + 2vmin);
-  color: #ffffff;
-  font-family: "Roboto, Arial, Helvetica, sans-serif";
+  justify-content: space-around; // Spaces out buttons on either end
+  border-bottom-left-radius: 15px; // Match DangerModalRoot border radius
+  border-bottom-right-radius: 15px; // Match DangerModalRoot border radius
 `;
+
+// Button styles may need to be adjusted as well to ensure they fit within the modal and match the new design
+

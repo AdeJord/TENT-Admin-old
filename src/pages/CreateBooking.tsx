@@ -42,7 +42,7 @@ const isBookingDateAvailable = async (date: string) => {
     }
 
     //Get booked dates from the API
-    const response = await axios.get(`http://213.171.209.90:8080/dates?date=${date}`);
+    const response = await axios.get(`https://adejord.co.uk/dates?date=${date}`);
     const bookedDates = response.data;
     console.log('Selected Date:', selectedDate);
     console.log('Booked Dates:', bookedDates);
@@ -55,6 +55,8 @@ const isBookingDateAvailable = async (date: string) => {
     return false;
   }
 };
+
+
 
 const schema = yup.object().shape({
   first_name: yup.string().required('You must enter a first name'),
@@ -101,9 +103,39 @@ const schema = yup.object().shape({
   group_leader_policy: yup.boolean().oneOf([true], 'Please accept the group leader policy'),
 });
 
+
+
 type MyResolverType = Resolver<FormData, typeof yupResolver>;
 
 const CreateBooking: React.FC = () => {
+
+//   const {
+//     /* ... */
+//     watch,
+//   } = useForm<FormData>({
+//     resolver: yupResolver(schema) as MyResolverType,
+//     defaultValues: {
+//       surname: "", // Provide default value for surname
+//       destination: "", // Provide default value for destination
+//       wheelchair_users: 0,
+//       // Add any other default values here if needed
+//     },
+//   });
+
+
+
+//need to make another site like this to upload without disruption
+
+
+
+
+//   const surnameValue = watch("surname");
+// const destinationValue = watch("destination");
+
+// console.log("Surname Value:", surnameValue);
+// console.log("Destination Value:", destinationValue);
+
+  
   const [showModal, setShowModal] = React.useState<boolean>(false);
   const [formData, setFormData] = React.useState<FormData | null>(null);
   const [selectedDestination, setSelectedDestination] = React.useState<string | null>(null);
@@ -174,15 +206,16 @@ const CreateBooking: React.FC = () => {
   // Function to send data to the createBooking endpoint
   const submitBooking: SubmitHandler<FormData> = async (data) => {
     try {
-      const response = await axios.post("http://213.171.209.90:8080/createBooking", data);
+      const response = await axios.post("https://adejord.co.uk/createBooking", data);
 
       console.log("Booking created successfully:", response.data);
       setFormData(data);
+      console.log(formData)
       setShowModal(true);
 
       // Send email with specific properties
       const { email_address, first_name, booking_date } = data;
-      await axios.post("http://213.171.209.90:8080/sendEmail", { email_address, first_name, booking_date });
+      await axios.post("https://adejord.co.uk/sendEmail", { email_address, first_name, booking_date });
 
       // You can perform additional actions after a successful booking creation here
 
@@ -196,7 +229,6 @@ const CreateBooking: React.FC = () => {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<FormData>({
     resolver: yupResolver(schema) as MyResolverType, // yup, joi and even your own.
@@ -262,7 +294,6 @@ const CreateBooking: React.FC = () => {
           <label>Email</label>
           <input
             style={{ width: "20vw" }}
-            // type="string" {...register("email_address")}
             type="text" {...register("email_address")}
             autoComplete="email" />
           {errors.email_address && (

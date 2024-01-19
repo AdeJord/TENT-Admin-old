@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   Root,
   Table,
-  CalendarContainer,
+  TableCell,
   Button,
   ButtonContainer,
   TableContainer
@@ -61,16 +61,18 @@ const AllBookings = () => {
 
 
   useEffect(() => {
+    console.log("fetch started"); // Log the start of function
     axios
-      .get("http://213.171.209.90:8080/bookings")
+      .get("https://adejord.co.uk/bookings")
       .then((response) => {
-        // console.log("API Response:", response.data); // Log the response
+        console.log("API Response:", response.data); // Log the response
         setData(response.data);
         
         // console.log("Data:", response.data);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
+        console.error('Error details:', error.response);
       });
     // { console.log(getBookingsForMonth(targetMonth)) }
   }, [targetMonth]);
@@ -209,7 +211,7 @@ const AllBookings = () => {
 
         <TableContainer>
           <Table>
-            <thead style={{ background: "gray" }}>
+            <thead style={{ background: "gray"}}>
               <tr>
                 <th>Booking Date</th>
                 <th>First Name</th>
@@ -227,12 +229,12 @@ const AllBookings = () => {
                 <th>Notes</th>
                 <th>Terms and Conditions</th>
                 <th>Group Leader Policy</th>
-                <th>LINK TO EDIT!</th>
                 {/* <th>Paid Status</th>
                 <th>Skipper</th>
                 <th>Crew 1</th>
                 <th>Crew 2</th>
                 <th>Complete</th> */}
+                <th>LINK TO EDIT!</th>
               </tr>
             </thead>
             <tbody>
