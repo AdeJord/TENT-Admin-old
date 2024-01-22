@@ -7,7 +7,7 @@ export const Root = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: 12px;
+  font-size: 15px;
   color: #051101;
   font-family: "Roboto, Arial, Helvetica, sans-serif";
   padding: 0;

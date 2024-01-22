@@ -16,12 +16,14 @@ interface Booking {
   booking_date: string;
   first_name: string;
   surname: string;
+  group_name: string;
   contact_number: string;
   email_address: string;
   house_number: string;
   street_name: string;
   city: string;
   postcode: string;
+  total_passengers: number;
   wheelchair_users: number;
   smoking: string;
   destination: string;
@@ -29,6 +31,7 @@ interface Booking {
   notes: string;
   terms_and_conditions: string;
   group_leader_policy: string;
+
   // paid_status: string;
   // skipper: string;
   // crew1: string;
@@ -58,17 +61,24 @@ const AllBookings = () => {
     return data.filter((booking) => booking.bookingmonth === month);
   };
 
+  // Sort the bookings by the booking_date in ascending order
+  const sortedBookings = getBookingsForMonth(targetMonth).sort((a, b) => {
+    const dateA = new Date(a.booking_date);
+    const dateB = new Date(b.booking_date);
+    return dateA.getTime() - dateB.getTime();
+  });
+
 
 
   useEffect(() => {
-    console.log("fetch started"); // Log the start of function
+    // console.log("fetch started"); // Log the start of function
     axios
       .get("https://adejord.co.uk/bookings")
       .then((response) => {
-        console.log("API Response:", response.data); // Log the response
+        // console.log("API Response:", response.data); // Log the response
         setData(response.data);
-        
-        // console.log("Data:", response.data);
+
+        console.log("Data:", response.data);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -183,8 +193,6 @@ const AllBookings = () => {
     setYear(newYear);
   };
 
-
-
   return (
     <Root>
       <div style={{
@@ -200,7 +208,11 @@ const AllBookings = () => {
           flexDirection: "row",
           width: "100vw",
         }}>
-          <h1>{targetMonth} {year}</h1>
+          <h1
+            style={{
+              fontSize: "2rem",
+            }}
+          >{targetMonth} {year}</h1>
         </div>
 
         <ButtonContainer>
@@ -211,17 +223,19 @@ const AllBookings = () => {
 
         <TableContainer>
           <Table>
-            <thead style={{ background: "gray"}}>
+            <thead style={{ background: "gray" }}>
               <tr>
                 <th>Booking Date</th>
                 <th>First Name</th>
                 <th>Surname</th>
+                <th>Group Name</th>
                 <th>Contact Number</th>
                 <th>Contact Email</th>
                 <th>House Number</th>
                 <th>Street</th>
                 <th>City</th>
                 <th>Postcode</th>
+                <th>Passengers</th>
                 <th>Wheelchair Users</th>
                 <th>Smoking</th>
                 <th>Destination</th>
@@ -238,17 +252,19 @@ const AllBookings = () => {
               </tr>
             </thead>
             <tbody>
-              {getBookingsForMonth(targetMonth).map((item, index) => (
+              {sortedBookings.map((item, index) => (
                 <tr key={index}>
                   <td>{new Date(item.booking_date).toLocaleDateString('en-GB')}</td>
                   <td>{item.first_name}</td>
                   <td>{item.surname}</td>
+                  <td>{item.group_name}</td>
                   <td>{item.contact_number}</td>
                   <td>{item.email_address}</td>
                   <td>{item.house_number}</td>
                   <td>{item.street_name}</td>
                   <td>{item.city}</td>
                   <td>{item.postcode}</td>
+                  <td>{item.total_passengers}</td>
                   <td>{item.wheelchair_users}</td>
                   <td>{item.smoking ? 'Yes' : 'No'}</td>
                   <td>{item.destination}</td>

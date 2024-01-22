@@ -11,7 +11,7 @@ function Home() {
                     <Link style={{ textDecoration: 'none' }} to="./AllBookings">View/Edit Bookings</Link>
                 </ContainerPartition>
                 <ContainerPartition>
-                    <Link style={{ textDecoration: 'none' }} to="./AllVolunteers">View All Volunteers</Link>
+                    <Link style={{ textDecoration: 'none' }} to="./AllVolunteers">View/Edit Volunteers</Link>
                 </ContainerPartition>
             </Container>
             <Container>
@@ -19,7 +19,7 @@ function Home() {
                     <Link style={{ textDecoration: 'none' }} to="/CreateBooking">Create Booking</Link>
                 </ContainerPartition>
                 <ContainerPartition>
-                    <Link style={{ textDecoration: 'none' }} to='/EditVolunteers'>Add/Edit Volunteers</Link>
+                    <Link style={{ textDecoration: 'none' }} to='/AddVolunteers'>Add A Volunteer</Link>
                 </ContainerPartition>
             </Container>
         </Root>

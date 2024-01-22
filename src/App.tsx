@@ -4,7 +4,7 @@ import AllVolunteers from './pages/AllVolunteers';
 import Calendar from './pages/Calendar';
 import Home from './pages/Home';
 import CreateBooking from './pages/CreateBooking';
-import EditVolunteers from './pages/EditVolunteers';
+import AddVolunteers from './pages/AddVolunteers';
 import BookingEditPage from './pages/BookingEditPage';
 import { BrowserRouter, Route, Link, Navigate, Outlet, Routes } from 'react-router-dom';
 
@@ -27,7 +27,7 @@ function App() {
           <Route path="/allvolunteers" element={<AllVolunteers />} />
           <Route path="/calendar" element={<Calendar />} />
           <Route path='/createbooking' element={<CreateBooking />} />
-          <Route path='/editvolunteers' element={<EditVolunteers />} />
+          <Route path='/addvolunteers' element={<AddVolunteers />} />
           <Route path="/edit/:bookingId" element={<BookingEditPage />} />
         </Routes>
         </Root>

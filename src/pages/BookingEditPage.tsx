@@ -25,6 +25,7 @@ export const updateBookingData = async (bookingId: any, formData: any) => {
         const response = await axios.patch(`${BASE_URL}/updateBooking/${bookingId}`, formData);
         return response.data;
     } catch (error) {
+        console.log('error editing booking')
         throw error;
     }
 };
@@ -48,6 +49,7 @@ const BookingEditPage = () => {
     const [formData, setFormData] = useState({
         first_name: '',
         surname: '',
+        group_name: '',
         contact_number: '',
         email_address: '',
         house_number: '',
@@ -55,6 +57,7 @@ const BookingEditPage = () => {
         city: '',
         postcode: '',
         booking_date: '',
+        total_passengers: '',
         wheelchair_users: '',
         smoking: '',
         destination: '',
@@ -134,7 +137,7 @@ const BookingEditPage = () => {
                 setShowDangerModal(true); // Show the danger modal on error
             });
     };
-    
+
     const handleDangerModalCancel = () => {
         setShowDangerModal(false); // Close the modal
     }
@@ -226,6 +229,14 @@ const BookingEditPage = () => {
                             value={formData.surname}
                             onChange={handleInputChange}
                         />
+                        <label>Group/Org name:</label>
+                        <input
+                            style={{ width: "20vw" }}
+                            type="text"
+                            name="group_name"
+                            value={formData.group_name}
+                            onChange={handleInputChange}
+                        />
                         <label>Contact Number:</label>
                         <input
                             style={{ width: "20vw" }}
@@ -280,6 +291,14 @@ const BookingEditPage = () => {
                             type="text"
                             name="booking_date"
                             value={new Date(formData.booking_date).toLocaleDateString('en-GB')}
+                            onChange={handleInputChange}
+                        />
+                        <label>Passengers:</label>
+                        <input
+                            style={{ width: "20vw" }}
+                            type="text"
+                            name="total_passengers"
+                            value={formData.total_passengers}
                             onChange={handleInputChange}
                         />
                         <label>Wheelchair Users:</label>

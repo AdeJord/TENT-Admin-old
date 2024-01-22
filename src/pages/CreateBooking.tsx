@@ -29,6 +29,8 @@ interface FormData {
   notes?: string | undefined;
   terms_and_conditions: boolean;
   group_leader_policy: boolean;
+  total_passengers: number;
+  group_name?: string | undefined;
   // Need to add group size
 }
 
@@ -61,6 +63,7 @@ const isBookingDateAvailable = async (date: string) => {
 const schema = yup.object().shape({
   first_name: yup.string().required('You must enter a first name'),
   surname: yup.string().required('You must enter a surname'),
+  group_name: yup.string().notRequired(),
   contact_number: yup.string().required('You must enter a contact number'),
   email_address: yup.string().required('You must enter an email address'),
   house_number: yup.string().required('You must enter a house number'),
@@ -95,6 +98,10 @@ const schema = yup.object().shape({
     .number()
     .required()
     .oneOf([0, 1, 2], "Maximum of 2 wheelchair users per booking"),
+  total_passengers: yup
+    .number()
+    .required()
+    .oneOf([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "Maximum of 12 passengers per booking"),
   smoking: yup.boolean().required("Please select Yes or No for smoking"),
   destination: yup.string().required("Please select a destination"),
   lunch_arrangements: yup.string().required("Please select a lunch option"),
@@ -109,47 +116,15 @@ type MyResolverType = Resolver<FormData, typeof yupResolver>;
 
 const CreateBooking: React.FC = () => {
 
-//   const {
-//     /* ... */
-//     watch,
-//   } = useForm<FormData>({
-//     resolver: yupResolver(schema) as MyResolverType,
-//     defaultValues: {
-//       surname: "", // Provide default value for surname
-//       destination: "", // Provide default value for destination
-//       wheelchair_users: 0,
-//       // Add any other default values here if needed
-//     },
-//   });
-
-
-
-//need to make another site like this to upload without disruption
-
-
-
-
-//   const surnameValue = watch("surname");
-// const destinationValue = watch("destination");
-
-// console.log("Surname Value:", surnameValue);
-// console.log("Destination Value:", destinationValue);
-
-  
   const [showModal, setShowModal] = React.useState<boolean>(false);
   const [formData, setFormData] = React.useState<FormData | null>(null);
   const [selectedDestination, setSelectedDestination] = React.useState<string | null>(null);
-
-
-  //IF AUTHERLEY IS SELECTED THERE CAN BE NO PUB MEAL
-
 
   const navigate = useNavigate();
 
   const ModalClickHandler = () => {
     setShowModal(false);
     navigate('/');
-    //SEND EMAIL
   };
 
   // Helper function to get lunch arrangement description
@@ -208,14 +183,53 @@ const CreateBooking: React.FC = () => {
     try {
       const response = await axios.post("https://adejord.co.uk/createBooking", data);
 
-      console.log("Booking created successfully:", response.data);
+      // console.log("Booking created successfully:", response.data);
       setFormData(data);
-      console.log(formData)
+      console.log(formData)// returns null?
       setShowModal(true);
 
       // Send email with specific properties
-      const { email_address, first_name, booking_date } = data;
-      await axios.post("https://adejord.co.uk/sendEmail", { email_address, first_name, booking_date });
+      const { 
+        email_address, 
+        first_name, 
+        surname,
+        group_name,
+        contact_number,
+        house_number,
+        street_name,
+        city,
+        postcode,
+        booking_date, 
+        total_passengers,
+        wheelchair_users,
+        smoking,
+        destination,
+        lunch_arrangements,
+        notes,
+        terms_and_conditions,
+        group_leader_policy,
+
+       } = data;
+      await axios.post("https://adejord.co.uk/sendEmail", { 
+        email_address, 
+        first_name, 
+        surname,
+        group_name,
+        contact_number,
+        house_number,
+        street_name,
+        city,
+        postcode,
+        booking_date, 
+        total_passengers,
+        wheelchair_users,
+        smoking,
+        destination,
+        lunch_arrangements,
+        notes,
+        terms_and_conditions,
+        group_leader_policy,
+       });
 
       // You can perform additional actions after a successful booking creation here
 
@@ -244,7 +258,7 @@ const CreateBooking: React.FC = () => {
               onClick={ModalClickHandler}
               header="Booking Submitted"
               content={modalContent}
-              footer="Thank you for booking with us"
+              footer="Thank you for booking with us. We look forward to seeing you!"
             />
           </Backdrop>
         </>
@@ -281,7 +295,11 @@ const CreateBooking: React.FC = () => {
           {errors.surname && (
             <p style={{ color: "red" }}>{errors.surname.message}</p>
           )}
-
+          <label>Group/Organisation name <small>(If applicable)</small></label>
+          <input
+            style={{ width: "20vw" }}
+            {...register("group_name")}
+          />
           <label>Contact Number</label>
           <input
             style={{ width: "20vw" }}
@@ -310,7 +328,7 @@ const CreateBooking: React.FC = () => {
             <p style={{ color: "red" }}>{errors.house_number.message}</p>
           )}
 
-          <label>Steet Name</label>
+          <label>Street Name</label>
           <input
             style={{ width: "20vw" }}
             type="string" {...register("street_name")}
@@ -345,7 +363,16 @@ const CreateBooking: React.FC = () => {
             <p style={{ color: "red" }}>{errors.booking_date.message}</p>
           )}
           <br />
-          <label>Wheelchair Users</label>
+          <label>Total Passengers <small>(Max 12)</small></label>
+          <input
+            style={{
+              width: "5vw",
+            }} type="number" min={1} max={12} {...register("total_passengers")} />
+          {errors.total_passengers && (
+            <p style={{ color: "red" }}>{errors.total_passengers.message}</p>
+          )}
+          <br />
+          <label>Wheelchair Users <small>(Max 2)</small></label>
           <input
             style={{
               width: "5vw",
@@ -394,6 +421,19 @@ const CreateBooking: React.FC = () => {
                 onChange={() => setSelectedDestination("Coven")}
               />
               Coven(£100)
+              {errors.destination && (
+                <p style={{ color: "red" }}>{errors.destination.message}</p>
+              )}
+              <br />
+            </label>
+            <label>
+              <input
+                type="radio"
+                value="Penkridge"
+                {...register("destination")}
+                onChange={() => setSelectedDestination("Penkridge")}
+              />
+              Penkridge "Have A Go day"(£220)
               {errors.destination && (
                 <p style={{ color: "red" }}>{errors.destination.message}</p>
               )}
