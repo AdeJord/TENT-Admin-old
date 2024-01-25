@@ -209,7 +209,7 @@ export const TableContainer = styled.div`
   width: 95vw;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: left;
   color: #051101;
   font-family: "Roboto, Arial, Helvetica, sans-serif";
   -webkit-overflow-scrolling: touch; // Add momentum to scrolling on iOS devices

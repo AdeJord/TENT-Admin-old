@@ -36,7 +36,7 @@ const AllVolunteers = () => {
         // console.log("API Response:", response.data); // Log the response
         setData(response.data);
 
-        console.log("Data:", response.data);
+        // console.log("Data:", response.data);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -86,7 +86,7 @@ const AllVolunteers = () => {
                       cursor: "pointer",
                     }}
                   >
-                    <Link to={`/edit/${item.id}`}> {/* Use item.id instead of index */}
+                    <Link to={`/editVolunteer/${item.id}`}> {/* Use item.id instead of index */}
                       EDIT
                     </Link>
                   </td>

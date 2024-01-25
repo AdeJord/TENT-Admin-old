@@ -73,7 +73,7 @@ const BookingEditPage = () => {
     // Fetch booking data based on bookingId (useEffect to fetch data when the component mounts)
     useEffect(() => {
         if (!bookingId) {
-            console.error('No bookingId provided');
+            console.error('No booking Id provided');
             return;
         }
 
@@ -177,7 +177,7 @@ const BookingEditPage = () => {
                         <DangerModal
                             onClick={() => setShowDangerModal(false)} // Close the modal when clicked outside
                             header="Delete Confirmation"
-                            content="Are you sure you want to delete this booking?"
+                            content="Are you sure you want to delete this booking? (This cannot be undone)"
                             footer={
                                 <div
                                     style={{

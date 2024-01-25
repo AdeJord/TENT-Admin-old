@@ -77,8 +77,7 @@ const AllBookings = () => {
       .then((response) => {
         // console.log("API Response:", response.data); // Log the response
         setData(response.data);
-
-        console.log("Data:", response.data);
+        // console.log("Data:", response.data);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -284,7 +283,7 @@ const AllBookings = () => {
                       cursor: "pointer",
                     }}
                   >
-                    <Link to={`/edit/${item.id}`}> {/* Use item.id instead of index */}
+                    <Link to={`/editBooking/${item.id}`}> {/* Use item.id instead of index */}
                       EDIT
                     </Link>
                   </td>

@@ -7,6 +7,7 @@ import CreateBooking from './pages/CreateBooking';
 import AddVolunteers from './pages/AddVolunteers';
 import BookingEditPage from './pages/BookingEditPage';
 import { BrowserRouter, Route, Link, Navigate, Outlet, Routes } from 'react-router-dom';
+import EditVolunteers from './pages/EditVolunteers';
 
 function App() {
   return (
@@ -15,7 +16,7 @@ function App() {
         <Header>
           <Link style={{ 
             textDecoration: 'none', 
-            fontSize: '5vw',
+            fontSize: '4vw',
             color: '#EAF3E7',
              }} to="/">
           Tent Admin Page
@@ -28,7 +29,8 @@ function App() {
           <Route path="/calendar" element={<Calendar />} />
           <Route path='/createbooking' element={<CreateBooking />} />
           <Route path='/addvolunteers' element={<AddVolunteers />} />
-          <Route path="/edit/:bookingId" element={<BookingEditPage />} />
+          <Route path="/editBooking/:bookingId" element={<BookingEditPage />} />
+          <Route path="/editVolunteer/:volunteerId" element={<EditVolunteers />} />
         </Routes>
         </Root>
     </BrowserRouter>
