@@ -210,7 +210,7 @@ const CreateBooking: React.FC = () => {
         group_leader_policy,
 
        } = data;
-      await axios.post("https://adejord.co.uk/sendEmail", { 
+      await axios.post("https://adejord.co.uk/sendBookingConfirmationEmail", { 
         email_address, 
         first_name, 
         surname,
@@ -453,7 +453,9 @@ const CreateBooking: React.FC = () => {
             <input
               type="radio"
               value="Fish and Chips"
-              {...register("lunch_arrangements")} />
+              {...register("lunch_arrangements")}
+              disabled={selectedDestination === "Penkridge" }
+              />
             Fish & Chips
           </label>
           <label>
@@ -461,7 +463,7 @@ const CreateBooking: React.FC = () => {
               type="radio"
               value="Pub Meal"
               {...register("lunch_arrangements")}
-              disabled={selectedDestination === "Autherley"}
+              disabled={selectedDestination === "Autherley" || selectedDestination === "Penkridge"}
             />
             Pub Meal
             {errors.lunch_arrangements && (
